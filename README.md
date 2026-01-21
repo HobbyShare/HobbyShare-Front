@@ -89,4 +89,16 @@ Modelo de datos básico
 
 `export class createEventDto {   id: string;   title: string;   description: string;   category: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
 
+🏷️ Tipos más usados
+
+Tipo	Cuándo usarlo
+
+feat	Nueva funcionalidad
+fix	Arreglo de un bug
+chore	Config, tareas, deps, cosas internas
+docs	Cambios en documentación
+style	Cambios solo de formato (sin lógica)
+refactor	Refactor sin cambiar comportamiento
+test	Tests
+
 
