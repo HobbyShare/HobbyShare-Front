@@ -102,3 +102,11 @@ refactor	Refactor sin cambiar comportamiento
 test	Tests
 
 
+Branchs structure
+
+feature/auth-login
+feature/events-crud-list
+feature/events-map
+feature/events-calendar
+feature/dashboard-charts
+
