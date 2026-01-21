@@ -1,59 +1,92 @@
-# Sprint8HobbyShare
+# Sprint8 HobbyShare
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.1.
+### 🎯 MVP claro (para el profe)
 
-## Development server
+1. Login / registro
+    
+2. Crear evento (formulario simple)
+    
+3. Ver eventos en lista
+    
+4. Ver eventos en mapa
+    
+5. Ver eventos en calendario
+    
+6. Dashboard con 2–3 gráficos
 
-To start a local development server, run:
+## Arquitectura simple (Angular)
 
-```bash
-ng serve
-```
+- `auth`  login, register, guards, service
+    
+- `events` crud, map, calendar, service
+    
+- `dashboard` graficos, service
+    
+- `shared` nav, home, botones, cosas que se repitan
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- `core` servicesAuth, tokenService, Interceptors?
 
-## Code scaffolding
+## División de trabajo (en pareja)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- Tú → Auth + Dashboard + Gráficos
+    
+- Tu compañero → Mapas + Calendario + CRUD eventos   
 
-```bash
-ng generate component component-name
-```
+**Testing: ir haciendo al acabar cada componente/tarea, testing mas importante: 
+    servicios, crud, auth, llamadas api, y presentacion de graficos, mapa i calendar
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-```bash
-ng generate --help
-```
+## 📌 User Stories (para el README / memoria)
 
-## Building
+### 👤 Autenticación
 
-To build the project run:
+1. Como usuario quiero registrarme para poder crear y apuntarme a eventos.
+    
+2. Como usuario quiero iniciar sesión para acceder a mis eventos.
+    
 
-```bash
-ng build
-```
+### 🎯 Eventos
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+3. Como usuario quiero crear un evento con título, descripción, fecha, categoría y ubicación.
+    
+4. Como usuario quiero ver una lista de eventos disponibles.
+    
+5. Como usuario quiero apuntarme a un evento.
+    
+6. Como usuario quiero ver solo los eventos a los que estoy apuntado. (Listado)
+    
 
-## Running unit tests
+### 🗺️ Mapa
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+7. Como usuario quiero ver los eventos en un mapa para elegir por ubicación.
+    
 
-```bash
-ng test
-```
+### 📅 Calendario
 
-## Running end-to-end tests
+8. Como usuario quiero ver los eventos organizados por fecha en un calendario.
+    
 
-For end-to-end (e2e) testing, run:
+### 📊 Dashboard
 
-```bash
-ng e2e
-```
+9. Como usuario quiero ver estadísticas de uso (eventos por categoría, eventos por mes, etc). **Cuando toque hacerlo se comenta en detalle
+    
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Additional Resources
+Modelo de datos básico
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### User
+
+`interface User {   id: string; user: string;   name: string;   email: string;   category: string[]; createdAt: string; }`
+
+### Event
+
+`interface Event {   id: string;   title: string;   description: string;   category: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
+
+## Versión backend (NestJS DTO)
+
+`export class CreateUserDto {   userName: string;   name: string;   email: string;   password: string;   hobbies: string[]; }`
+
+
+`export class createEventDto {   id: string;   title: string;   description: string;   category: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
+
+
