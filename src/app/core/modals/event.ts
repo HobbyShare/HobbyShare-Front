@@ -12,3 +12,12 @@ export interface Event {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface CreateEventDto {
+  title: string;
+  description: string;
+  category: string;
+  date: string;
+  lat: number;
+  lng: number;
+}
