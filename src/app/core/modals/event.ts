@@ -1,5 +1,5 @@
 export interface Event {
-  id: string;
+  _id?: string;
   title: string;
   description: string;
   category: string;
@@ -8,5 +8,7 @@ export interface Event {
   lng: number;
   creatorId: string;
   creatorUser: string;
-  participants: string[]
+  participants: string[];
+  createdAt?: string;
+  updatedAt?: string;
 }
