@@ -90,6 +90,34 @@ export class EventsService {
     });
   }
 
+  joinEvent(id: string): void {
+    this.http.post<Event>(`${this.apiUrl}/${id}/join`, {}).subscribe({
+      next: (updatedEvent) => {
+        this._events.update(events =>
+          events.map(e => e._id === id ? updatedEvent : e)
+        );
+      },
+      error: (err) => {
+        console.error('Error joining event:', err);
+        this._error.set('Error al apuntarse al evento');
+      }
+    });
+  }
+
+  leaveEvent(id: string): void {
+    this.http.delete<Event>(`${this.apiUrl}/${id}/leave`).subscribe({
+      next: (updatedEvent) => {
+        this._events.update(events =>
+          events.map(e => e._id === id ? updatedEvent : e)
+        );
+      },
+      error: (err) => {
+        console.error('Error leaving event:', err);
+        this._error.set('Error al salirse del evento');
+      }
+    });
+  }
+
   clearError(): void {
     this._error.set(null);  // Limpiar errores
   }
