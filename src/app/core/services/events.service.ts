@@ -1,6 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Event, CreateEventDto } from '../../core/modals/event';
+import { EventModel, CreateEventDto } from '../modals/event-model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,7 @@ import { Event, CreateEventDto } from '../../core/modals/event';
 export class EventsService {
   private apiUrl = 'http://localhost:3000/events';
 
-  private _events = signal<Event[]>([]);
+  private _events = signal<EventModel[]>([]);
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
 
@@ -24,7 +24,7 @@ export class EventsService {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.get<Event[]>(this.apiUrl).subscribe({
+    this.http.get<EventModel[]>(this.apiUrl).subscribe({
       next: (events) => {
         this._events.set(events);
         this._loading.set(false);
@@ -41,7 +41,7 @@ export class EventsService {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.post<Event>(this.apiUrl, eventDto).subscribe({
+    this.http.post<EventModel>(this.apiUrl, eventDto).subscribe({
       next: (newEvent) => {
         this._events.update(events => [...events, newEvent]);
         this._loading.set(false);
@@ -54,11 +54,11 @@ export class EventsService {
     });
   }
 
-  updateEvent(id: string, eventDto: Partial<Event>): void {
+  updateEvent(id: string, eventDto: Partial<EventModel>): void {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.put<Event>(`${this.apiUrl}/${id}`, eventDto).subscribe({
+    this.http.put<EventModel>(`${this.apiUrl}/${id}`, eventDto).subscribe({
       next: (updatedEvent) => {
         this._events.update(events =>
           events.map(e => e._id === id ? updatedEvent : e)
@@ -91,7 +91,7 @@ export class EventsService {
   }
 
   joinEvent(id: string): void {
-    this.http.post<Event>(`${this.apiUrl}/${id}/join`, {}).subscribe({
+    this.http.post<EventModel>(`${this.apiUrl}/${id}/join`, {}).subscribe({
       next: (updatedEvent) => {
         this._events.update(events =>
           events.map(e => e._id === id ? updatedEvent : e)
@@ -105,7 +105,7 @@ export class EventsService {
   }
 
   leaveEvent(id: string): void {
-    this.http.delete<Event>(`${this.apiUrl}/${id}/leave`).subscribe({
+    this.http.delete<EventModel>(`${this.apiUrl}/${id}/leave`).subscribe({
       next: (updatedEvent) => {
         this._events.update(events =>
           events.map(e => e._id === id ? updatedEvent : e)
