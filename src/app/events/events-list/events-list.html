@@ -1,0 +1,15 @@
+<p>events-list works!</p>
+
+
+@if (events().length > 0) {
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (event of events(); track event._id) {
+      <div class="bg-white rounded-lg shadow p-4  cursor-pointer hover:shadow-xl transition-shadow duration-300">
+        <h3 class="font-bold">{{ event.title }}</h3>
+        <!-- <img [src]="apiService.getImageUrl(movie.backdrop_path)" [alt]="movie.title"  class="w-full h-auto pt-2" /> -->
+        <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">Descripción:</span> {{ event.description }}</p>
+        <!-- <p class="text-sm text-gray-600 pt-2"><span class="strongKey">Estreno:</span> {{ event.release_date }}</p> -->
+      </div>
+    }
+  </div>
+}
