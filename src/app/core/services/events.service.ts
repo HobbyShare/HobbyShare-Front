@@ -54,6 +54,41 @@ export class EventsService {
     });
   }
 
+  updateEvent(id: string, eventDto: Partial<Event>): void {
+    this._loading.set(true);
+    this._error.set(null);
+
+    this.http.put<Event>(`${this.apiUrl}/${id}`, eventDto).subscribe({
+      next: (updatedEvent) => {
+        this._events.update(events =>
+          events.map(e => e._id === id ? updatedEvent : e)
+        );
+        this._loading.set(false);
+      },
+      error: (err) => {
+        console.error('Error updating event:', err);
+        this._error.set('Error al actualizar el evento');
+        this._loading.set(false);
+      }
+    });
+  }
+
+  deleteEvent(id: string): void {
+    this._loading.set(true);
+    this._error.set(null);
+
+    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
+      next: () => {
+        this._events.update(events => events.filter(e => e._id !== id));
+        this._loading.set(false);
+      },
+      error: (err) => {
+        console.error('Error deleting event:', err);
+        this._error.set('Error al eliminar el evento');
+        this._loading.set(false);
+      }
+    });
+  }
 
   clearError(): void {
     this._error.set(null);  // Limpiar errores
