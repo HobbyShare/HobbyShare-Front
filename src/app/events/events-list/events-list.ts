@@ -23,4 +23,9 @@ export class EventsList implements OnInit{
   ngOnInit(): void {
     this.eventsService.loadEvents();
   }
+
+  goToCreateEvent(): void {
+    this.router.navigate(['/form']);
+  }
+
 }
