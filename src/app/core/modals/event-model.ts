@@ -1,8 +1,10 @@
+import { Hobby } from "../../shared/enums/hobby.enum";
+
 export interface EventModel {
   _id?: string;
   title: string;
   description: string;
-  category: string;
+  hobby: Hobby;
   date: string;
   lat: number;
   lng: number;
@@ -16,7 +18,7 @@ export interface EventModel {
 export interface CreateEventDto {
   title: string;
   description: string;
-  category: string;
+  hobby: string;
   date: string;
   lat: number;
   lng: number;
