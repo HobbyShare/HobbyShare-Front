@@ -73,7 +73,7 @@ export class EventsService {
     });
   }
 
-  deleteEvent(id: string): void {
+  deleteEventService(id: string): void {
     this._loading.set(true);
     this._error.set(null);
 
@@ -90,7 +90,7 @@ export class EventsService {
     });
   }
 
-  joinEvent(id: string): void {
+  joinEvent(id: string, userId: string): void {
     this.http.post<EventModel>(`${this.apiUrl}/${id}/join`, {}).subscribe({
       next: (updatedEvent) => {
         this._events.update(events =>

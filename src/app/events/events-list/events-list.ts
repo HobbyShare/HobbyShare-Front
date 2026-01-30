@@ -3,6 +3,7 @@ import { EventsService } from '../../core/services/events.service';
 import { EventModel } from '../../core/modals/event-model';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { User } from '../../core/modals/user';
 
 @Component({
   selector: 'app-events-list',
@@ -15,6 +16,7 @@ export class EventsList implements OnInit{
   private router = inject(Router);
 
   events = signal<EventModel[]>([]);
+  user = signal<User | null>(null);
   // currentPage = signal<number>(1);
   // totalPages = signal<number>(0);
   isLoading = signal<boolean>(false);
@@ -22,10 +24,37 @@ export class EventsList implements OnInit{
 
   ngOnInit(): void {
     this.eventsService.loadEvents();
+    this.user.set({
+      id: '697b36f55165940ae1ee3a8b', // El userId de tu token
+      username: 'jose',
+      name: 'Jose',
+      email: 'jose@example.com',
+      category: [],
+      createdAt: new Date().toISOString()
+    });
+
   }
 
   goToCreateEvent(): void {
     this.router.navigate(['/form']);
+  }
+
+  deleteEvent(event: EventModel | undefined): void {
+console.log('Creador evento: ', event?.creatorId)
+console.log('Id evento', event?._id)
+    const currentUser = this.user();
+    if(event?._id && currentUser && event?.creatorId === currentUser.id) {
+      this.eventsService.deleteEventService(event._id);
+    }
+}
+
+joinEvent(id: string | undefined): void {
+  console.log(id)
+  const currentUser = this.user();
+console.log('this.user', this.user()?.name)
+    if(id && currentUser) {
+      this.eventsService.joinEvent(id, currentUser.id);
+    }
   }
 
 }

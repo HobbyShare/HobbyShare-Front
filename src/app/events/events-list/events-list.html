@@ -10,6 +10,9 @@
         <!-- <img [src]="apiService.getImageUrl(movie.backdrop_path)" [alt]="movie.title"  class="w-full h-auto pt-2" /> -->
         <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">Descripción:</span> {{ event.description }}</p>
         <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">Creador:</span> {{ event.creatorUser }}</p>
+        <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">num. participantes:</span> {{ event.participants.length }}</p>
+        <button type="button" class="border-2 m-2" (click)="deleteEvent(event)">Borrar Ev</button>
+        <button type="button" class="border-2" (click)="joinEvent(event._id)">Join</button>
         <!-- <p class="text-sm text-gray-600 pt-2"><span class="strongKey">Estreno:</span> {{ event.release_date }}</p> -->
       </div>
     }
