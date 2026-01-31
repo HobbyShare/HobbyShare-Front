@@ -11,7 +11,7 @@ export class Home {
   private router = inject(Router);
 
   goToEventsList(): void {
-    this.router.navigate(['/list']);
+    this.router.navigate(['/events']);
   }
 
 }

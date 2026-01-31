@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { EventModel, CreateEventDto } from '../modals/event-model';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class EventsService {
   loading = this._loading.asReadonly();
   error = this._error.asReadonly();
 
-  eventsCount = computed(() => this._events().length);  // cantidad de eventos
+  eventsCount = computed(() => this._events().length);
 
   constructor(private http: HttpClient) {}
 
@@ -37,59 +38,71 @@ export class EventsService {
     });
   }
 
-  createEvent(eventDto: CreateEventDto): void {
+  getEventById(id: string): Observable<EventModel> {
+    return this.http.get<EventModel>(`${this.apiUrl}/${id}`).pipe(
+      catchError((err) => {
+        console.error('Error getting event:', err);
+        this._error.set('Error al obtener el evento');
+        return throwError(() => err);
+      })
+    );
+  }
+
+  createEvent(eventDto: CreateEventDto): Observable<EventModel> {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.post<EventModel>(this.apiUrl, eventDto).subscribe({
-      next: (newEvent) => {
+    return this.http.post<EventModel>(this.apiUrl, eventDto).pipe(
+      tap((newEvent) => {
         this._events.update(events => [...events, newEvent]);
         this._loading.set(false);
-      },
-      error: (err) => {
+      }),
+      catchError((err) => {
         console.error('Error creating event:', err);
         this._error.set('Error al crear el evento');
         this._loading.set(false);
-      }
-    });
+        return throwError(() => err);
+      })
+    );
   }
 
-  updateEvent(id: string, eventDto: Partial<EventModel>): void {
+  updateEvent(id: string, eventDto: CreateEventDto): Observable<EventModel> {
     this._loading.set(true);
     this._error.set(null);
 
-    this.http.put<EventModel>(`${this.apiUrl}/${id}`, eventDto).subscribe({
-      next: (updatedEvent) => {
+    return this.http.put<EventModel>(`${this.apiUrl}/${id}`, eventDto).pipe(
+      tap((updatedEvent) => {
         this._events.update(events =>
           events.map(e => e._id === id ? updatedEvent : e)
         );
         this._loading.set(false);
-      },
-      error: (err) => {
+      }),
+      catchError((err) => {
         console.error('Error updating event:', err);
         this._error.set('Error al actualizar el evento');
         this._loading.set(false);
-      }
-    });
+        return throwError(() => err);
+      })
+    );
   }
 
-  deleteEventService(id: string): void {
-    this._loading.set(true);
-    this._error.set(null);
+deleteEventService(id: string): Observable<void> {
+  this._loading.set(true);
+  this._error.set(null);
 
-    this.http.delete(`${this.apiUrl}/${id}`).subscribe({
-      next: () => {
-        this._events.update(events => events.filter(e => e._id !== id));
-        this._loading.set(false);
-      },
-      error: (err) => {
-        console.error('Error deleting event:', err);
-        this._error.set('Error al eliminar el evento');
-        this._loading.set(false);
-      }
-    });
-  }
-
+  return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
+    tap(() => {
+      this._events.update(events => events.filter(e => e._id !== id));
+      this._loading.set(false);
+    }),
+    catchError((err) => {
+      console.error('Error deleting event:', err);
+      this._error.set('Error al eliminar el evento');
+      this._loading.set(false);
+      return throwError(() => err);
+    })
+  );
+}
   joinEvent(id: string, userId: string): void {
     this.http.post<EventModel>(`${this.apiUrl}/${id}/join`, {}).subscribe({
       next: (updatedEvent) => {
@@ -119,6 +132,6 @@ export class EventsService {
   }
 
   clearError(): void {
-    this._error.set(null);  // Limpiar errores
+    this._error.set(null);
   }
 }
