@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { Hobby } from '../../core/enums/hobby.enum';
 import { AuthService } from '../../core/services/auth.service';
+import { email } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-register',
@@ -69,10 +70,37 @@ export class RegisterComponent {
     const confirmPassword = this.registerForm.value.confirmPassword
 
     if(password !== confirmPassword) {
-      this.errorMessage.set('Password does not match')
+      this.errorMessage.set('Passwords do not match')
     }
 
-    
+    const userDate = {
+      userName: this.registerForm.value.userName,
+      name: this.registerForm.value.name,
+      email: this.registerForm.value.email,
+      password: this.registerForm.value.password,
+      hobbies: this.selectedHobbies()
+    }
+
+    this.isLoading.set(true)
+
+    this.authService.register(userDate).subscribe({
+      next: (response) => {
+        this.isLoading.set(false);
+        this.successMessage.set('Successfully registered');
+
+        setTimeout(() => {
+          this.router.navigate(['/login'])
+        }, 2000);
+      },
+
+      error: (error) => {
+        this.isLoading.set(false)
+        this.errorMessage.set(error.error?.message || 'Error registering user')
+      }
+
+    })
+
+
 
 
 

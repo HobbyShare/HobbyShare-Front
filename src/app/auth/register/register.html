@@ -1,7 +1,8 @@
 <div class="flex flex-col justify-center items-center min-h-[calc(100vh-150px)] px-4">
 
-  <form class="w-full max-w-sm mx-auto px-6 py-8 md:py-10 flex flex-col justify-center text-center border-none rounded-2xl ring-2 ring-gray-500 focus-within:ring-gray-300 transition-all"
+  <form class="w-full max-w-sm mx-auto px-6 py-8 md:py-10 flex flex-col justify-center text-center border-none rounded-2xl ring-2 ring-green-500 focus-within:ring-gray-300 transition-all"
         [formGroup]="registerForm"
+        (ngSubmit)="onSubmit()"
         >
 
     <h1 class="text-2xl md:text-3xl mb-4 md:mb-5 font-bold">Register</h1>
@@ -10,29 +11,39 @@
            class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
 
     <input type="text" placeholder="Name" formControlName="name"
-           class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
+           class="border-none rounded-2xl ring-2 ring-green-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
 
     <input type="email" placeholder="Email" formControlName="email"
-             class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
+             class="border-none rounded-2xl ring-2 ring-green-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
 
     <input type="password" placeholder="Password" formControlName="password"
-           class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
+           class="border-none rounded-2xl ring-2 ring-green-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
 
     <input type="password" placeholder="Confirm Password" formControlName="confirmPassword"
-           class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
+           class="border-none rounded-2xl ring-2 ring-green-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-2 md:my-3 placeholder-white bg-transparent outline-none">
 
-    <label for="">Hobbies</label>
+    <label for="">Interested in..</label>
 
-    @for (hobby of hobbyList; track hobby) {
-      <input type="checkbox" [name]="hobby" [id]="hobby">
-      <label [for]="hobby"> {{ hobby }}</label>
+    <div class="grid grid-cols-3">
+      @for (hobby of hobbyList; track hobby) {
+        <div class=" flex flex-row gap-5">
+          <label [for]="hobby"> {{ hobby }}</label>
+          <input type="checkbox" [checked]="isHobbySelected(hobby)" (change)="toggleHobby(hobby)">
 
+        </div>
+      }
 
-    }
+    </div>
 
-    <button type="submit"
-            class="border-amber-200 border-2 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105
+    <button type="submit" [disabled]="isLoading()"
+            class="border-pink-500 border-2 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105
                    transition-all duration-300 cursor-pointer px-4 py-3 md:py-2 text-white my-4 font-semibold">Register</button>
+
+
+
+    @if (successMessage()) {
+    <div class="success">{{ successMessage() }}</div>
+  }
 
     @if (errorMessage()) {
       <div class="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
