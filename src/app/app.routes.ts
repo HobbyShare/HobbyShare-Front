@@ -5,8 +5,9 @@ import { EventForm } from './events/event-form/event-form';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'list', component: EventsList }, // , canActivate: [authGuard]
-  { path: 'form', component: EventForm }, // , canActivate: [authGuard]
+  { path: 'events', component: EventsList }, // , canActivate: [authGuard]
+  { path: 'events/new', component: EventForm }, // , canActivate: [authGuard]
+  { path: 'events/:id/edit', component: EventForm }, // , canActivate: [authGuard]
   // { path: 'events/:id', component: FilmDetail, canActivate: [authGuard] },
   // { path: 'login', component: Login },
   // { path: 'register', component: Register},
