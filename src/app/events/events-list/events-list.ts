@@ -26,9 +26,9 @@ export class EventsList implements OnInit{
     this.eventsService.loadEvents();
     this.user.set({
       id: '697b36f55165940ae1ee3a8b', // El userId de tu token
-      username: 'jose',
-      name: 'Jose',
-      email: 'jose@example.com',
+      username: 'manolito',
+      name: 'Manolito',
+      email: 'manolito@example.com',
       category: [],
       createdAt: new Date().toISOString()
     });
@@ -36,21 +36,40 @@ export class EventsList implements OnInit{
   }
 
   goToCreateEvent(): void {
-    this.router.navigate(['/form']);
+    this.router.navigate(['/events/new']);
   }
 
-  deleteEvent(event: EventModel | undefined): void {
-console.log('Creador evento: ', event?.creatorId)
-console.log('Id evento', event?._id)
-    const currentUser = this.user();
-    if(event?._id && currentUser && event?.creatorId === currentUser.id) {
-      this.eventsService.deleteEventService(event._id);
-    }
-}
+  goToEditEvent(eventId: string | undefined): void {
+    this.router.navigate(['/events', eventId, 'edit']);
+  }
 
-joinEvent(id: string | undefined): void {
-  console.log(id)
-  const currentUser = this.user();
+  goTodeleteEvent(event: EventModel | undefined): void {
+    console.log('Creador evento: ', event?.creatorId);
+    console.log('Id evento', event?._id);
+
+    const currentUser = this.user();
+  console.log('🔍 currentUser completo:', currentUser);
+  console.log('🔍 currentUser.id:', currentUser?.id);
+  console.log('🔍 event?.creatorId:', event?.creatorId);
+  console.log('🔍 Comparación ===:', event?.creatorId === currentUser?.id);
+  console.log('🔍 Tipos:', typeof event?.creatorId, typeof currentUser?.id);
+
+
+    if (event?._id && currentUser && event?.creatorId === currentUser.id) {
+      this.eventsService.deleteEventService(event._id).subscribe({
+        next: () => {
+          console.log('✅ Evento eliminado correctamente');
+        },
+        error: (err) => {
+          console.error('❌ Error al eliminar:', err);
+        }
+      });
+    }
+  }
+
+  goTojoinEvent(id: string | undefined): void {
+console.log(id)
+    const currentUser = this.user();
 console.log('this.user', this.user()?.name)
     if(id && currentUser) {
       this.eventsService.joinEvent(id, currentUser.id);

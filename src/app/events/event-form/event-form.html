@@ -6,7 +6,11 @@
             <div class="form-wrapper">
               <div>
                 <label for="title">Título: </label>
-                <input type="text" id="title" [formField]="createEventForm.title" placeholder="Título del evento" aria-label="Titulo">
+                @if (isEditMode()) {
+                  <input type="text" id="title-readonly" [value]="eventFormModel().title" readonly class="readonly-field">
+                } @else {
+                  <input type="text" id="title" [formField]="createEventForm.title" placeholder="Título del evento" aria-label="Titulo">
+                }
               </div>
               <div>
                 <label for="description">Descripción: </label>
@@ -14,19 +18,20 @@
               </div>
               <div>
                 <label for="hobby">Escoger categoría del hobby: </label>
-                <select id="hobby" [formField]="createEventForm.hobby">
-                  <!-- [value]="eventFormModel().hobby" (change)="onCategoryChange($event)"> -->
-
-                  <option value="" disabled>Selecciona un hobby</option>
-                  @for (hobby of hobbies; track hobby) {
-                    <option [value]="hobby">{{ hobby }}</option>
-                  }
-                </select>
-
-                <!-- Mostrar error si existe -->
-                <!-- @if (createEventForm.hobby().errors(); as errors) {
-                  <span class="error">{{ errors[0].message }}</span>
-                } -->
+                @if (isEditMode()) {
+                  <select id="hobby-readonly" disabled class="readonly-field">
+                    <option [value]="eventFormModel().hobby" selected>
+                      {{ eventFormModel().hobby }}
+                    </option>
+                  </select>
+                } @else {
+                  <select id="hobby" [formField]="createEventForm.hobby">
+                    <option value="" disabled>Selecciona un hobby</option>
+                    @for (hobby of hobbies; track hobby) {
+                      <option [value]="hobby">{{ hobby }}</option>
+                    }
+                  </select>
+                }
               </div>
               <div>
                 <input type="text" id="date" [formField]="createEventForm.date" placeholder="Fecha" aria-label="Fecha">
@@ -34,7 +39,11 @@
               <input type="number" id="lat" [formField]="createEventForm.lat" placeholder="Latitud" aria-label="Latitud">
               <input type="number" id="lng" [formField]="createEventForm.lng" placeholder="Longitud" aria-label="Longitud">
 
-              <button type="button" class="submit-button" (click)="onSubmitEventForm()">Sol·licitar pressupost<span class="arrow-icon">→</span></button>
+              @if (isEditMode()) {
+                <button type="button" class="submit-button" (click)="onSubmitEventForm()">Guardar modificaciones</button>
+              } @else {
+                <button type="button" class="submit-button" (click)="onSubmitEventForm()">Crear evento</button>
+              }
             </div>
 
             @if (!this.createEventForm().valid() && this.buttonSubmitClicked()) {
