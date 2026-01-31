@@ -25,9 +25,9 @@ export class EventsList implements OnInit{
   ngOnInit(): void {
     this.eventsService.loadEvents();
     this.user.set({
-      id: '697b36f55165940ae1ee3a8b', // El userId de tu token
-      username: 'manolito',
-      name: 'Manolito',
+      id: '697e1e9d37015f6c49dd2c50', // El userId de tu token
+      username: 'maca',
+      name: 'Macarena',
       email: 'manolito@example.com',
       category: [],
       createdAt: new Date().toISOString()
@@ -67,7 +67,7 @@ export class EventsList implements OnInit{
     }
   }
 
-  goTojoinEvent(id: string | undefined): void {
+  goToJoinEvent(id: string | undefined): void {
 console.log(id)
     const currentUser = this.user();
 console.log('this.user', this.user()?.name)
@@ -76,4 +76,12 @@ console.log('this.user', this.user()?.name)
     }
   }
 
+  goToLeaveEvent(id: string | undefined): void {
+console.log(id)
+    const currentUser = this.user();
+console.log('this.user', this.user()?.name)
+    if(id && currentUser) {
+      this.eventsService.leaveEvent(id);
+    }
+  }
 }
