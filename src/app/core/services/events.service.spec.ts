@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { EventsService } from './events.service';
 
-describe('Events', () => {
+describe('EventsService', () => {
   let service: EventsService;
 
   beforeEach(() => {

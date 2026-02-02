@@ -56,17 +56,18 @@ Modelo de datos básico
 
 ### User
 
-`interface User {   id: string; user: string;   name: string;   email: string;   category: string[]; createdAt: string; }`
+`interface User {   id: string; user: string;   name: string;   email: string;   hobby: string[]; createdAt: string; }`
 
 ### Event
 
-`interface Event {   id: string;   title: string;   description: string;   category: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
+`interface Event {   id: string;   title: string;   description: string;   hobby: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
 
 ## Versión backend (NestJS DTO)
 
 `export class CreateUserDto {   userName: string;   name: string;   email: string;   password: string;   hobbies: string[]; }`
 
-`export class createEventDto {   id: string;   title: string;   description: string;   category: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
+
+`export class createEventDto {   id: string;   title: string;   description: string;   hobby: string;   date: string;   lat: number;   lng: number;   creatorId: string; creatorUser: string;   participants: string[]; // ids de usuarios }`
 
 🏷️ Tipos más usados
 
