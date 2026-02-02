@@ -3,7 +3,7 @@ import { EventsService } from '../../core/services/events.service';
 import { EventModel } from '../../core/modals/event-model';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { User } from '../../core/modals/user';
+import { User } from '../../core/modals/user-api';
 
 @Component({
   selector: 'app-events-list',

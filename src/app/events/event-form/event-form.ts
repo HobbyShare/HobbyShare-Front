@@ -4,7 +4,7 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../core/services/events.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { form, required, FormField, readonly, disabled } from '@angular/forms/signals';
-import { Hobby } from '../../shared/enums/hobby.enum';
+import { Hobby } from '../../core/enums/hobby.enum';
 
 @Component({
   selector: 'app-event-form',

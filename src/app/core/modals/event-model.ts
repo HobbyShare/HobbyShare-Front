@@ -1,4 +1,4 @@
-import { Hobby } from "../../shared/enums/hobby.enum";
+import { Hobby } from "../enums/hobby.enum";
 
 export interface EventModel {
   _id?: string;
