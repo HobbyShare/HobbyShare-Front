@@ -1,0 +1,32 @@
+<div class="flex flex-col justify-center items-center min-h-[calc(100vh-150px)] px-4">
+
+  <form class="w-full max-w-sm mx-auto px-6 py-8 md:py-10 flex flex-col justify-center text-center border-none rounded-2xl ring-2 ring-green-500 focus-within:ring-gray-300 transition-all"
+        [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()">
+
+    <h1 class="text-2xl md:text-3xl mb-4 md:mb-5 font-bold">Log In</h1>
+
+    <input type="text" placeholder="UserName" formControlName="userName"
+      class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-3 md:my-4 placeholder-white bg-transparent outline-none">
+
+    <input type="password" placeholder="Password" formControlName="password"
+      class="border-none rounded-2xl ring-2 ring-gray-500 focus:ring-gray-300 focus:ring-2 px-4 py-3 md:py-2 my-3 md:my-4 placeholder-white bg-transparent outline-none">
+
+    <button class="border-green-500 border-2 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105
+      transition-all duration-300 cursor-pointer px-4 py-3 md:py-2 text-white my-4 font-semibold">
+      Log in
+    </button>
+
+    @if (errorMessage()) {
+      <div class="bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="text-sm md:text-base">
+      <span class="text-gray-300">Don't have an account? </span>
+      <a routerLink="/register" class="font-semibold text-pink-500 hover:underline">Register here</a>
+    </div>
+
+  </form>
+</div>
