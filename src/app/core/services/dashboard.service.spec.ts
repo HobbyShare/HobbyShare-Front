@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DashboardServiceTs } from './dashboard.service.ts';
+import { DashboardServiceTs } from './dashboard.service.js';
 
 describe('DashboardServiceTs', () => {
   let service: DashboardServiceTs;
