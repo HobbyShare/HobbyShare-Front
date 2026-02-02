@@ -1,0 +1,55 @@
+<p>event-form works!</p>
+
+        <form>
+          <div class="budget-list-card">
+            <h3 class="list-card-title">Datos del evento:</h3>
+            <div class="form-wrapper">
+              <div>
+                <label for="title">Título: </label>
+                @if (isEditMode()) {
+                  <input type="text" id="title-readonly" [value]="eventFormModel().title" readonly class="readonly-field">
+                } @else {
+                  <input type="text" id="title" [formField]="createEventForm.title" placeholder="Título del evento" aria-label="Titulo">
+                }
+              </div>
+              <div>
+                <label for="description">Descripción: </label>
+                <input type="text" id="description" [formField]="createEventForm.description" placeholder="Descripción" aria-label="Descripcion">
+              </div>
+              <div>
+                <label for="hobby">Escoger categoría del hobby: </label>
+                @if (isEditMode()) {
+                  <select id="hobby-readonly" disabled class="readonly-field">
+                    <option [value]="eventFormModel().hobby" selected>
+                      {{ eventFormModel().hobby }}
+                    </option>
+                  </select>
+                } @else {
+                  <select id="hobby" [formField]="createEventForm.hobby">
+                    <option value="" disabled>Selecciona un hobby</option>
+                    @for (hobby of hobbies; track hobby) {
+                      <option [value]="hobby">{{ hobby }}</option>
+                    }
+                  </select>
+                }
+              </div>
+              <div>
+                <input type="text" id="date" [formField]="createEventForm.date" placeholder="Fecha" aria-label="Fecha">
+              </div>
+              <input type="number" id="lat" [formField]="createEventForm.lat" placeholder="Latitud" aria-label="Latitud">
+              <input type="number" id="lng" [formField]="createEventForm.lng" placeholder="Longitud" aria-label="Longitud">
+
+              @if (isEditMode()) {
+                <button type="button" class="submit-button" (click)="onSubmitEventForm()">Guardar modificaciones</button>
+              } @else {
+                <button type="button" class="submit-button" (click)="onSubmitEventForm()">Crear evento</button>
+              }
+            </div>
+
+            @if (!this.createEventForm().valid() && this.buttonSubmitClicked()) {
+              <div class="form-error-message">
+                <small>S'han d'omplir tots els camps de dades</small>
+              </div>
+            }
+          </div>
+        </form>
