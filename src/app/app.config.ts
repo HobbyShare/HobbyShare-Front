@@ -8,7 +8,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(),
+    // provideHttpClient(),
     provideHttpClient(withInterceptors([devAuthInterceptor]) // para simular un usuario logueado
     ),
   ]
