@@ -1,8 +1,8 @@
-export interface User {
+export interface User {  //lo que se trae del back
   id: string;
-  username: string;
+  userName: string;
   name: string;
   email: string;
-  category: string[];
+  hobbies: string[];
   createdAt: string;
 }

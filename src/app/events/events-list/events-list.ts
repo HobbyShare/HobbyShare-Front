@@ -26,10 +26,10 @@ export class EventsList implements OnInit{
     this.eventsService.loadEvents();
     this.user.set({
       id: '697e1e9d37015f6c49dd2c50', // El userId de tu token
-      username: 'maca',
+      userName: 'maca',
       name: 'Macarena',
       email: 'manolito@example.com',
-      category: [],
+      hobbies: [],
       createdAt: new Date().toISOString()
     });
 
