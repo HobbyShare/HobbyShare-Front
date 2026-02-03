@@ -5,6 +5,7 @@ import { RegisterComponent } from './auth/register/register';
 import { CalendarComponent } from './events/calendar/calendar';
 import { EventsList } from './events/events-list/events-list';
 import { EventForm } from './events/event-form/event-form';
+import { MapComponent } from './events/map/map';
 
 export const routes: Routes = [
 
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'events', component: EventsList }, // , canActivate: [authGuard]
   { path: 'events/new', component: EventForm }, // , canActivate: [authGuard]
   { path: 'events/:id/edit', component: EventForm }, // , canActivate: [authGuard]
+  { path: 'events/map', component: MapComponent }, // , canActivate: [authGuard]
 
   {
     path: 'calendar',
