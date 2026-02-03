@@ -1,21 +1,45 @@
 <p>events-list works!</p>
 
-    <button (click)="goToCreateEvent()" class="bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl transform hover:scale-105">Crea un evento</button>
+<button (click)="goToCreateEvent()" class="bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl transform hover:scale-105">
+  Crea un evento
+</button>
 
 @if (eventsService.events()) {
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     @for (event of eventsService.events(); track event._id) {
-      <div class="bg-white rounded-lg shadow p-4  cursor-pointer hover:shadow-xl transition-shadow duration-300">
+      <div class="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-xl transition-shadow duration-300">
         <h3 class="font-bold">{{ event.title }}</h3>
-        <!-- <img [src]="apiService.getImageUrl(movie.backdrop_path)" [alt]="movie.title"  class="w-full h-auto pt-2" /> -->
-        <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">Descripción:</span> {{ event.description }}</p>
-        <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">Creador:</span> {{ event.creatorUser }}</p>
-        <p class="text-sm text-gray-600 pt-2 line-clamp-6"><span class="strongKey">num. participantes:</span> {{ event.participants.length }}</p>
-        <button type="button" class="border-2 m-2" (click)="goToEditEvent(event._id)">Modificar</button>
-        <button type="button" class="border-2 m-2" (click)="goTodeleteEvent(event)">Borrar Ev</button>
-        <button type="button" class="border-2" (click)="goToJoinEvent(event._id)">Join</button>
-        <button type="button" class="border-2" (click)="goToLeaveEvent(event._id)">Leave</button>
-        <!-- <p class="text-sm text-gray-600 pt-2"><span class="strongKey">Estreno:</span> {{ event.release_date }}</p> -->
+        <p class="text-sm text-gray-600 pt-2 line-clamp-6">
+          <span class="strongKey">Descripción:</span> {{ event.description }}
+        </p>
+        <p class="text-sm text-gray-600 pt-2 line-clamp-6">
+          <span class="strongKey">Creador:</span> {{ event.creatorUser }}
+        </p>
+        <p class="text-sm text-gray-600 pt-2 line-clamp-6">
+          <span class="strongKey">num. participantes:</span> {{ event.participants.length }}
+        </p>
+
+        <!-- ⬅️ Solo mostrar si es el creador -->
+        @if (isEventCreator(event)) {
+          <button type="button" class="border-2 m-2 bg-blue-600 hover:bg-blue-700 text-white"
+                  (click)="goToEditEvent(event._id)">
+            Modificar
+          </button>
+          <button type="button" class="border-2 m-2 bg-red-600 hover:bg-red-700 text-white"
+                  (click)="goTodeleteEvent(event)">
+            Borrar Ev
+          </button>
+        }
+
+        <!-- ⬅️ Siempre mostrar Join/Leave -->
+        <button type="button" class="border-2 bg-green-600 hover:bg-green-700 text-white"
+                (click)="goToJoinEvent(event._id)">
+          Join
+        </button>
+        <button type="button" class="border-2 bg-yellow-600 hover:bg-yellow-700 text-white"
+                (click)="goToLeaveEvent(event._id)">
+          Leave
+        </button>
       </div>
     }
   </div>

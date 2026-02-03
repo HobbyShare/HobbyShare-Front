@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventModel, CreateEventDto } from '../modals/event-model';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 
@@ -103,7 +103,7 @@ deleteEventService(id: string): Observable<void> {
     })
   );
 }
-  joinEvent(id: string, userId: string): void {
+  joinEvent(id: string): void {
     this.http.post<EventModel>(`${this.apiUrl}/${id}/join`, {}).subscribe({
       next: (updatedEvent) => {
         this._events.update(events =>
