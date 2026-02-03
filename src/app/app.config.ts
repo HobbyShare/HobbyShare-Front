@@ -10,6 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     // provideHttpClient(),
     provideHttpClient(withInterceptors([devAuthInterceptor]) // para simular un usuario logueado
-    ),
+   ),
   ]
 };

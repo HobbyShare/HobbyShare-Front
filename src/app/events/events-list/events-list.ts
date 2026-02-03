@@ -1,9 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../core/services/events.service';
 import { EventModel } from '../../core/modals/event-model';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { User } from '../../core/modals/user-api';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-events-list',
@@ -14,25 +15,18 @@ import { User } from '../../core/modals/user-api';
 export class EventsList implements OnInit{
   eventsService = inject(EventsService);
   private router = inject(Router);
+  authService = inject(AuthService); // ⬅️ INYECTAR
 
-  events = signal<EventModel[]>([]);
+  events = this.eventsService.events;
+
   user = signal<User | null>(null);
-  // currentPage = signal<number>(1);
-  // totalPages = signal<number>(0);
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
+  currentUserId = computed(() => this.authService.currentUserId());
 
   ngOnInit(): void {
     this.eventsService.loadEvents();
-    this.user.set({
-      id: '697e1e9d37015f6c49dd2c50', // El userId de tu token
-      userName: 'maca',
-      name: 'Macarena',
-      email: 'manolito@example.com',
-      hobbies: [],
-      createdAt: new Date().toISOString()
-    });
-
+    console.log('🔍 User ID al cargar:', this.currentUserId()); // debug
   }
 
   goToCreateEvent(): void {
@@ -44,18 +38,8 @@ export class EventsList implements OnInit{
   }
 
   goTodeleteEvent(event: EventModel | undefined): void {
-    console.log('Creador evento: ', event?.creatorId);
-    console.log('Id evento', event?._id);
 
-    const currentUser = this.user();
-  console.log('🔍 currentUser completo:', currentUser);
-  console.log('🔍 currentUser.id:', currentUser?.id);
-  console.log('🔍 event?.creatorId:', event?.creatorId);
-  console.log('🔍 Comparación ===:', event?.creatorId === currentUser?.id);
-  console.log('🔍 Tipos:', typeof event?.creatorId, typeof currentUser?.id);
-
-
-    if (event?._id && currentUser && event?.creatorId === currentUser.id) {
+    if (event?._id && event?.creatorId === this.currentUserId()) {
       this.eventsService.deleteEventService(event._id).subscribe({
         next: () => {
           console.log('✅ Evento eliminado correctamente');
@@ -68,20 +52,30 @@ export class EventsList implements OnInit{
   }
 
   goToJoinEvent(id: string | undefined): void {
-console.log(id)
-    const currentUser = this.user();
-console.log('this.user', this.user()?.name)
-    if(id && currentUser) {
-      this.eventsService.joinEvent(id, currentUser.id);
+    const currentUserId = this.currentUserId();
+    const event = this.events().find(e => e._id === id);
+
+    if (id && currentUserId && event && event.creatorId !== currentUserId) {
+      this.eventsService.joinEvent(id);
+    } else {
+      console.warn("No puedes unirte a tu propio evento.");
     }
   }
 
   goToLeaveEvent(id: string | undefined): void {
-console.log(id)
-    const currentUser = this.user();
-console.log('this.user', this.user()?.name)
-    if(id && currentUser) {
+    const currentUserId = this.currentUserId();
+    const event = this.events().find(e => e._id === id);
+    const isJoined = event?.participants.find(e => e === currentUserId);
+
+    if(id && event && isJoined) {
       this.eventsService.leaveEvent(id);
+    } else {
+      console.warn("No puedes salir de un evento en el que no estás.");
     }
   }
+
+  isEventCreator(event: EventModel): boolean {
+    return event.creatorId === this.currentUserId();
+  }
+
 }

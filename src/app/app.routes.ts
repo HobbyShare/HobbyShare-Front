@@ -1,11 +1,8 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './shared/home/home';
-<<<<<<< HEAD
-=======
 import { LoginComponent } from './auth/login/login';
 import { RegisterComponent } from './auth/register/register';
 import { CalendarComponent } from './events/calendar/calendar';
->>>>>>> develop
 import { EventsList } from './events/events-list/events-list';
 import { EventForm } from './events/event-form/event-form';
 

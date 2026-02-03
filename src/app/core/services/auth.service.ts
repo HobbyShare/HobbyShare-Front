@@ -2,6 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+
+interface JwtPayload {
+  userName: string;
+  sub: string; // Este es el userId
+  iat?: number;
+  exp?: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +19,7 @@ export class AuthService {
 
   isAuthenticated = signal<boolean>(false)
   currentUser = signal<string | null>(null)
+  currentUserId = signal<string | null>(null); // ⬅️ NUEVO
 
   constructor(
     private http: HttpClient,
@@ -20,7 +29,19 @@ export class AuthService {
     const token = this.getToken()
       if (token) {
         this.isAuthenticated.set(true)
+        this.loadUserFromToken(token); // ⬅️ NUEVO
       }
+  }
+
+  private loadUserFromToken(token: string): void {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      this.currentUser.set(decoded.userName);
+      this.currentUserId.set(decoded.sub); // El userId está en 'sub'
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      this.logout();
+    }
   }
 
   register(userData: any): Observable<any> {
@@ -32,7 +53,8 @@ export class AuthService {
       tap((response: any) => {
         this.saveToken(response.access_token)
         this.isAuthenticated.set(true)
-        this.currentUser.set(credentials.userName)
+        this.loadUserFromToken(response.access_token); // ⬅️ AÑADIR
+        // this.currentUser.set(credentials.userName)
       })
     )
   }
@@ -45,11 +67,20 @@ export class AuthService {
     return localStorage.getItem('token')
   }
 
+  getUserId(): string | null {
+    return this.currentUserId();
+  }
+
   logout(): void {
     localStorage.removeItem('token')
     this.isAuthenticated.set(false)
     this.currentUser.set(null)
+    this.currentUserId.set(null); // ⬅️ AÑADIR
     this.router.navigate(['/login'])
   }
 
 }
+// function jwtDecode<T>(token: string) {
+//   throw new Error('Function not implemented.');
+// }
+
