@@ -1,26 +1,32 @@
-
 import { CreateEventDto, EventModel } from './../../core/modals/event-model';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { EventsService } from '../../core/services/events.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { form, required, FormField, readonly, disabled } from '@angular/forms/signals';
+import { form, required, FormField } from '@angular/forms/signals';
 import { Hobby } from '../../core/enums/hobby.enum';
+import { LocationPickerModal } from '../location-picker-modal/location-picker-modal';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-event-form',
-  imports: [FormField],
+  standalone: true,
+  imports: [FormField, LocationPickerModal, CommonModule],
   templateUrl: './event-form.html',
   styleUrl: './event-form.css',
 })
 export class EventForm implements OnInit {
   private eventsService = inject(EventsService);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  router = inject(Router); // público para usarlo en el template
 
   buttonSubmitClicked = signal<boolean>(false);
   eventId = signal<string | null>(null);
   isEditMode = computed(() => !!this.eventId());
   isLoadingEvent = signal(false);
+
+  // Modal de selección de ubicación
+  isLocationModalOpen = signal(false);
+  selectedLocation = signal<{ lat: number; lng: number } | null>(null);
 
   hobbies = Object.values(Hobby);
 
@@ -33,13 +39,12 @@ export class EventForm implements OnInit {
     lng: 0,
   });
 
+  // Nota: Cambiado de createEventForm() a createEventForm para que funcione con [formField]
   createEventForm = form(this.eventFormModel, (path) => {
     required(path.title, { message: 'El título es obligatorio' });
     required(path.description, { message: 'La descripción es obligatoria' });
     required(path.hobby, { message: 'El hobby es obligatorio' });
     required(path.date, { message: 'La fecha es obligatoria' });
-    required(path.lat, { message: 'La latitud es obligatoria' });
-    required(path.lng, { message: 'La longitud es obligatoria' });
   });
 
   ngOnInit(): void {
@@ -66,6 +71,12 @@ export class EventForm implements OnInit {
           lng: event.lng,
         });
 
+        // Actualizar la ubicación seleccionada para el preview
+        this.selectedLocation.set({
+          lat: event.lat,
+          lng: event.lng,
+        });
+
         this.isLoadingEvent.set(false);
       },
       error: (err) => {
@@ -80,6 +91,14 @@ export class EventForm implements OnInit {
     this.buttonSubmitClicked.set(true);
 
     if (!this.createEventForm().valid()) {
+      console.log('❌ Formulario inválido');
+      return;
+    }
+
+    // Validar que se haya seleccionado una ubicación
+    const location = this.selectedLocation();
+    if (!location || location.lat === 0 || location.lng === 0) {
+      alert('Por favor, selecciona una ubicación en el mapa');
       return;
     }
 
@@ -107,19 +126,54 @@ export class EventForm implements OnInit {
     });
   }
 
-  onCategoryChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
+  // ============================================
+  // GESTIÓN DEL MODAL DE UBICACIÓN
+  // ============================================
+
+  openLocationPicker(): void {
+    this.isLocationModalOpen.set(true);
+  }
+
+  onLocationConfirmed(coords: { lat: number; lng: number }): void {
+    this.selectedLocation.set(coords);
+
+    // Actualizar el formulario con las nuevas coordenadas
     this.eventFormModel.update(model => ({
       ...model,
-      hobby: target.value
+      lat: coords.lat,
+      lng: coords.lng,
+    }));
+
+    console.log('📍 Ubicación confirmada:', coords);
+  }
+
+  onModalClosed(): void {
+    this.isLocationModalOpen.set(false);
+  }
+
+  removeLocation(): void {
+    this.selectedLocation.set(null);
+    this.eventFormModel.update(model => ({
+      ...model,
+      lat: 0,
+      lng: 0,
     }));
   }
 
-  get pageTitle(): string {
-    return this.isEditMode() ? 'Editar Evento' : 'Crear Evento';
+  // ============================================
+  // HELPERS PARA EL TEMPLATE
+  // ============================================
+
+  get hasLocation(): boolean {
+    const location = this.selectedLocation();
+    return !!location && location.lat !== 0 && location.lng !== 0;
   }
 
-  get submitButtonText(): string {
-    return this.isEditMode() ? 'Guardar cambios' : 'Crear evento';
+  get locationText(): string {
+    const location = this.selectedLocation();
+    if (!location || location.lat === 0) {
+      return 'No seleccionada';
+    }
+    return `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`;
   }
 }

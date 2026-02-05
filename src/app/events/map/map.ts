@@ -1,6 +1,7 @@
-import { Component, OnInit, effect, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, effect, inject, Input, Output, EventEmitter, signal } from '@angular/core';
 import * as L from 'leaflet';
 import { EventsService } from '../../core/services/events.service';
+import { MapService } from '../../core/services/map.service';
 
 @Component({
   selector: 'app-map',
@@ -8,151 +9,189 @@ import { EventsService } from '../../core/services/events.service';
   templateUrl: './map.html',
   styleUrl: './map.css',
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
   private eventsService = inject(EventsService);
+  private mapService = inject(MapService);
 
-  private map: any;
-  private userMarker: L.Marker<any> | undefined;
+  // Configuración del componente
+  @Input() mode: 'view' | 'select' = 'view';
+  @Input() initialCoords?: { lat: number; lng: number };
+  @Input() showEventMarkers: boolean = true;
+  @Input() containerId: string = 'map';
+  @Input() centerCoords: [number, number] = [41.40237282641176, 2.194541858893481]; // Barcelona por defecto
+  @Input() zoom: number = 13;
 
-  private eventMarkers: L.Marker<any>[] = [];
+  @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
+
+  private map: L.Map | undefined;
+  private userMarker: L.Marker | undefined;
+  private eventMarkers: L.Marker[] = [];
+  private selectionMarker: L.Marker | undefined;
 
   events = this.eventsService.events;
+  selectedLocation = signal<{ lat: number; lng: number } | null>(null);
 
   constructor() {
-    // Effect: se ejecuta automáticamente cuando cambia events()
+    // Effect: actualiza marcadores de eventos cuando cambian
     effect(() => {
       const currentEvents = this.events();
 
-      if (this.map && currentEvents.length > 0) {
-        console.log('Pintando marcadores de eventos:', currentEvents.length);
+      if (this.map && this.showEventMarkers && currentEvents.length > 0 && this.mode === 'view') {
         this.paintEventMarkers(currentEvents);
       }
     });
   }
 
   ngOnInit(): void {
-    this.initMap();
+    // Dar tiempo al DOM para renderizar el contenedor
+    setTimeout(() => {
+      this.initMap();
 
-    this.eventsService.loadEvents();
+      if (this.mode === 'view' && this.showEventMarkers) {
+        this.eventsService.loadEvents();
+      }
+
+      if (this.mode === 'select') {
+        this.setupSelectionMode();
+      }
+    }, 0);
   }
 
-  // INICIALIZACIÓN DEL MAPA
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.mapService.destroyMap(this.containerId);
+    }
+  }
+
+  // ============================================
+  // INICIALIZACIÓN
+  // ============================================
+
   private initMap(): void {
-    this.map = L.map('map').setView([41.40237282641176, 2.194541858893481], 13);
+    const center = this.initialCoords
+      ? [this.initialCoords.lat, this.initialCoords.lng] as [number, number]
+      : this.centerCoords;
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(this.map);
+    this.map = this.mapService.initMap({
+      containerId: this.containerId,
+      center,
+      zoom: this.zoom,
+    });
 
-    console.log('Mapa inicializado');
+    // Si hay coordenadas iniciales, mostrar marcador
+    if (this.initialCoords && this.mode === 'select') {
+      this.placeSelectionMarker(this.initialCoords.lat, this.initialCoords.lng);
+    }
   }
 
-  //MARCADORES DE EVENTOS
-  // Icono personalizado para los eventos: marcador naranja
-  private createEventIcon(): L.Icon {
-    return L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
+  private setupSelectionMode(): void {
+    if (!this.map) return;
+
+    // Permitir click en el mapa para colocar marcador
+    this.mapService.onMapClick(this.map, (lat, lng) => {
+      this.placeSelectionMarker(lat, lng);
     });
   }
+
+  // ============================================
+  // MODO SELECCIÓN
+  // ============================================
+
+  private placeSelectionMarker(lat: number, lng: number): void {
+    if (!this.map) return;
+
+    // Eliminar marcador anterior si existe
+    if (this.selectionMarker) {
+      this.mapService.removeMarker(this.selectionMarker);
+    }
+
+    // Crear nuevo marcador draggable
+    this.selectionMarker = this.mapService.createMarker(this.map, {
+      lat,
+      lng,
+      icon: this.mapService.createSelectionIcon(),
+      draggable: true,
+      popup: 'Ubicación seleccionada',
+    });
+
+    // Listener para cuando arrastren el marcador
+    this.mapService.onMarkerDragEnd(this.selectionMarker, (newLat, newLng) => {
+      this.updateSelectedLocation(newLat, newLng);
+    });
+
+    this.updateSelectedLocation(lat, lng);
+    this.selectionMarker.openPopup();
+  }
+
+  private updateSelectedLocation(lat: number, lng: number): void {
+    this.selectedLocation.set({ lat, lng });
+    this.locationSelected.emit({ lat, lng });
+  }
+
+  // ============================================
+  // MODO VISUALIZACIÓN - EVENTOS
+  // ============================================
 
   private paintEventMarkers(events: any[]): void {
-    this.eventMarkers.forEach(marker => marker.remove());
+    if (!this.map) return;
+
+    // Eliminar marcadores anteriores
+    this.mapService.removeMarkers(this.eventMarkers);
     this.eventMarkers = [];
 
-    let paintedCount = 0;
+    // Crear nuevos marcadores
+    this.eventMarkers = this.mapService.createEventMarkers(this.map, events);
 
-    events.forEach(event => {
-      if (!event.lat || !event.lng || (event.lat === 0 && event.lng === 0)) {
-        console.warn('Evento sin coordenadas válidas:', event.title);
-        return;
-      }
-
-      try {
-        const marker = L.marker([event.lat, event.lng], {
-          icon: this.createEventIcon(),
-        })
-          .addTo(this.map)
-          .bindPopup(this.createPopupContent(event));
-
-        this.eventMarkers.push(marker);
-        paintedCount++;
-      } catch (error) {
-        console.error('❌ Error pintando marcador:', error, event);
-      }
-    });
-
-    console.log(`Marcadores pintados: ${paintedCount} de ${events.length}`);
+    console.log(`Marcadores pintados: ${this.eventMarkers.length} de ${events.length}`);
   }
 
-  private createPopupContent(event: any): string {
-    // hobby puede ser un array o un string según cómo lo devuelva la API
-    const hobbyText = Array.isArray(event.hobby) ? event.hobby.join(', ') : event.hobby;
-
-    return `
-      <div style="min-width: 200px;">
-        <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${event.title}</h4>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Hobby:</strong> ${hobbyText}</p>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Fecha:</strong> ${event.date}</p>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Creador:</strong> ${event.creatorUser}</p>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Participantes:</strong> ${event.participants?.length || 0}</p>
-        <p style="margin: 8px 0 0 0; font-size: 12px; color: #666; font-style: italic;">${event.description}</p>
-      </div>
-    `;
-  }
-
-  // MARCADOR DE GEOLOCALIZACIÓN DEL USUARIO
-  // Icono personalizado para la posición del usuario: marcador azul
-  private createUserIcon(): L.Icon {
-    return L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
-  }
+  // ============================================
+  // GEOLOCALIZACIÓN
+  // ============================================
 
   getLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords: [number, number] = [position.coords.latitude, position.coords.longitude];
+    if (!this.map) return;
 
-          if (this.userMarker) {
-            this.userMarker.setLatLng(coords).openPopup();
-          } else {
-            this.userMarker = L.marker(coords, {
-              icon: this.createUserIcon(),
-              draggable: true,
-            })
-              .addTo(this.map)
-              .bindPopup('Estás aquí')
-              .openPopup();
-
-            this.userMarker.on('dragend', (event) => {
-              const marker = event.target;
-              const position = marker.getLatLng();
-              marker.setLatLng(position).openPopup();
-              this.map.setView(position, 19);
-              console.log(`Marcador movido a ${position.lat}, ${position.lng}`);
-            });
-          }
-
-          this.map.setView(coords, 15);
-          console.log('Geolocalización obtenida:', coords);
-        },
-        () => {
-          alert('No se pudo obtener la geolocalización');
+    this.mapService
+      .getUserLocation()
+      .then((coords) => {
+        if (this.mode === 'view') {
+          this.showUserLocation(coords);
+        } else if (this.mode === 'select') {
+          // En modo selección, colocar el marcador en la ubicación del usuario
+          this.placeSelectionMarker(coords.lat, coords.lng);
+          this.mapService.setView(this.map!, [coords.lat, coords.lng], 15);
         }
-      );
+      })
+      .catch(() => {
+        alert('No se pudo obtener la geolocalización');
+      });
+  }
+
+  private showUserLocation(coords: { lat: number; lng: number }): void {
+    if (!this.map) return;
+
+    const coordsArray: [number, number] = [coords.lat, coords.lng];
+
+    if (this.userMarker) {
+      this.userMarker.setLatLng(coordsArray).openPopup();
     } else {
-      alert('Geolocalización no soportada por el navegador');
+      this.userMarker = this.mapService.createMarker(this.map, {
+        lat: coords.lat,
+        lng: coords.lng,
+        icon: this.mapService.createUserIcon(),
+        draggable: true,
+        popup: 'Estás aquí',
+      });
+
+      this.mapService.onMarkerDragEnd(this.userMarker, (lat, lng) => {
+        this.mapService.setView(this.map!, [lat, lng], 19);
+        console.log(`Marcador de usuario movido a ${lat}, ${lng}`);
+      });
+
+      this.userMarker.openPopup();
     }
+
+    this.mapService.setView(this.map, coordsArray, 15);
   }
 }
