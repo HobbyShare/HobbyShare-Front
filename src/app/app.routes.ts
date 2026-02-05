@@ -5,6 +5,9 @@ import { RegisterComponent } from './auth/register/register';
 import { CalendarComponent } from './events/calendar/calendar';
 import { EventsList } from './events/events-list/events-list';
 import { EventForm } from './events/event-form/event-form';
+import { PieChartComponent } from './dashboard/pie-chart/pie-chart';
+import { BarChartComponent } from './dashboard/bar-chart/bar-chart';
+import { LineChartComponent } from './dashboard/line-chart/line-chart';
 
 export const routes: Routes = [
 
@@ -31,6 +34,20 @@ export const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent,
+  },
+  {
+    path: 'pie-chart',
+    component: PieChartComponent,
+  },
+
+  {
+    path: 'bar-chart',
+    component: BarChartComponent,
+  },
+
+  {
+    path: 'line-chart',
+    component: LineChartComponent,
   },
 
   {

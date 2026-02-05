@@ -55,28 +55,7 @@ export class CalendarComponent implements OnInit {
 
      this.eventsService.loadEvents()
 
-
-    // this.events.set([
-    //   {
-    //     title: 'Event 1',
-    //     start: new Date(),
-    //     description: 'Jugar al ping pong'
-    //   },
-    //   {
-    //     title: 'Event 2',
-    //     start: new Date(),
-    //     description: 'Jugar al ping pong'
-    //   },
-    //   {
-    //     title: 'Event 3',
-    //     start: new Date(),
-    //     description: 'Jugar al ping pong'
-    //   },
-
-    // ])
-
   }
-
 
 
   formatEventsForCalendar(events: EventModel[]): void {

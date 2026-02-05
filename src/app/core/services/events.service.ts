@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { EventModel, CreateEventDto } from '../modals/event-model';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, count, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -134,4 +134,40 @@ deleteEventService(id: string): Observable<void> {
   clearError(): void {
     this._error.set(null);
   }
+
+  getEventsByHobby()  {
+    const events = this._events()
+    const counts: any = {}
+
+    events.forEach(event => {
+      const hobby = event.hobby
+      counts[hobby] = (counts[hobby] || 0) + 1
+      });
+
+
+    return counts
+  }
+
+  getEventsByMonth() {
+    const events = this._events()
+    const counts = events.reduce((acc: any, event: EventModel) => {
+
+      const dateEvent = new Date(event.date)
+
+      let month = dateEvent.toLocaleString('en-EN', { month: 'long' })
+
+      month = month.charAt(0).toUpperCase() + month.slice(1)
+
+      acc[month] = ( acc[month] || 0 ) + 1
+
+      return acc
+
+    }, {})
+
+    return counts
+
+  }
+
+ 
+
 }
