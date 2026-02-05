@@ -3,7 +3,7 @@
 @import "tailwindcss";
 
 body {
-  background-color: rgb(3, 18, 4); /* gray-950 */
+  background-color: rgb(235, 224, 69); /* gray-950 */
   color: white;
   min-height: 100vh;
 }
