@@ -6,6 +6,7 @@ import { form, required, FormField } from '@angular/forms/signals';
 import { Hobby } from '../../core/enums/hobby.enum';
 import { LocationPickerModal } from '../location-picker-modal/location-picker-modal';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser'; // <--- Importación clave
 
 @Component({
   selector: 'app-event-form',
@@ -15,6 +16,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './event-form.css',
 })
 export class EventForm implements OnInit {
+  constructor(private sanitizer: DomSanitizer) {};
+
   private eventsService = inject(EventsService);
   private route = inject(ActivatedRoute);
   router = inject(Router); // público para usarlo en el template
@@ -175,5 +178,12 @@ export class EventForm implements OnInit {
       return 'No seleccionada';
     }
     return `${location.lat.toFixed(6)}, ${location.lng.toFixed(6)}`;
+  }
+
+  getSafeUrl() {
+    const lat = this.selectedLocation()?.lat;
+    const lng = this.selectedLocation()?.lng;
+    const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
