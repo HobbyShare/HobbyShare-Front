@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, effect, inject, Input, Output, EventEmitt
 import * as L from 'leaflet';
 import { EventsService } from '../../core/services/events.service';
 import { MapService } from '../../core/services/map.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map',
@@ -12,6 +13,7 @@ import { MapService } from '../../core/services/map.service';
 export class MapComponent implements OnInit, OnDestroy {
   private eventsService = inject(EventsService);
   private mapService = inject(MapService);
+  private router = inject(Router);
 
   // Configuración del componente
   @Input() mode: 'view' | 'select' = 'view';
@@ -55,17 +57,17 @@ export class MapComponent implements OnInit, OnDestroy {
         this.setupSelectionMode();
       }
     }, 0);
+    (window as any).navigateToEvent = (eventId: string) => {
+      this.router.navigate(['/events', eventId]);
+    };
   }
 
   ngOnDestroy(): void {
     if (this.map) {
       this.mapService.destroyMap(this.containerId);
     }
+    delete (window as any).navigateToEvent;
   }
-
-  // ============================================
-  // INICIALIZACIÓN
-  // ============================================
 
   private initMap(): void {
     const center = this.initialCoords
@@ -93,19 +95,13 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ============================================
-  // MODO SELECCIÓN
-  // ============================================
-
   private placeSelectionMarker(lat: number, lng: number): void {
     if (!this.map) return;
 
-    // Eliminar marcador anterior si existe
-    if (this.selectionMarker) {
+   if (this.selectionMarker) {
       this.mapService.removeMarker(this.selectionMarker);
     }
 
-    // Crear nuevo marcador draggable
     this.selectionMarker = this.mapService.createMarker(this.map, {
       lat,
       lng,
@@ -128,26 +124,16 @@ export class MapComponent implements OnInit, OnDestroy {
     this.locationSelected.emit({ lat, lng });
   }
 
-  // ============================================
-  // MODO VISUALIZACIÓN - EVENTOS
-  // ============================================
-
   private paintEventMarkers(events: any[]): void {
     if (!this.map) return;
 
-    // Eliminar marcadores anteriores
     this.mapService.removeMarkers(this.eventMarkers);
     this.eventMarkers = [];
 
-    // Crear nuevos marcadores
     this.eventMarkers = this.mapService.createEventMarkers(this.map, events);
 
     console.log(`Marcadores pintados: ${this.eventMarkers.length} de ${events.length}`);
   }
-
-  // ============================================
-  // GEOLOCALIZACIÓN
-  // ============================================
 
   getLocation(): void {
     if (!this.map) return;
@@ -158,7 +144,6 @@ export class MapComponent implements OnInit, OnDestroy {
         if (this.mode === 'view') {
           this.showUserLocation(coords);
         } else if (this.mode === 'select') {
-          // En modo selección, colocar el marcador en la ubicación del usuario
           this.placeSelectionMarker(coords.lat, coords.lng);
           this.mapService.setView(this.map!, [coords.lat, coords.lng], 15);
         }
