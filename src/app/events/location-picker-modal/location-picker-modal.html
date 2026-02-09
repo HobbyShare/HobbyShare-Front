@@ -1,0 +1,46 @@
+<p>location-picker-modal works!</p>
+@if (isModalOpen) {
+  <div class="modal-overlay" (click)="onBackdropClick($event)">
+    <div class="modal-content">
+      <!-- Header -->
+      <div class="modal-header">
+        <h2 class="modal-title">📍 Seleccionar ubicación del evento</h2>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeModal()"
+          aria-label="Cerrar modal">
+          ✕
+        </button>
+      </div>
+
+      <!-- Body - Mapa -->
+      <div class="modal-body modal-map">
+        <app-map
+          mode="select"
+          [initialCoords]="initialCoords"
+          [showEventMarkers]="false"
+          containerId="modal-map"
+          (locationSelected)="onLocationSelected($event)">
+        </app-map>
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal()">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="confirmLocation()"
+          [disabled]="!selectedLocation()">
+          ✓ Confirmar ubicación
+        </button>
+      </div>
+    </div>
+  </div>
+}

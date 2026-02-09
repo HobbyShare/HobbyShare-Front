@@ -13,6 +13,13 @@ export class NavbarComponent {
   private authService = inject(AuthService)
 
   isAuthenticated = this.authService.isAuthenticated
-  onLogout = this.authService.logout
+
+  onLogout() {
+
+    this.authService.logout()
+
+  }
+
+
 
 }

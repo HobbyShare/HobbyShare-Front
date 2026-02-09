@@ -7,6 +7,8 @@ import { EventsList } from './events/events-list/events-list';
 import { EventForm } from './events/event-form/event-form';
 import { Dashboard } from './dashboard/dashboard/dashboard';
 import { authGuard } from './guards/auth-guard';
+import { EventDetail } from './events/event-detail/event-detail';
+import { MapComponent } from './events/map/map';
 
 export const routes: Routes = [
 
@@ -32,9 +34,10 @@ export const routes: Routes = [
         { path: 'events', component: EventsList } ,
         { path: 'events/new', component: EventForm },
         { path: 'events/:id/edit', component: EventForm },
+        { path: 'events/map', component: MapComponent },
+        { path: 'events/:id', component: EventDetail },
         { path: 'calendar', component: CalendarComponent },
         { path: 'dashboard', component: Dashboard },
-        //...falta MAPA
     ]
   },
 

@@ -64,10 +64,14 @@ export class CalendarComponent implements OnInit {
 
   formatEventsForCalendar(events: EventModel[]): void {
 
+
+
    const calendarEvents: EventInput[] = events.map(event => ({
+
+
     id: event._id,
     title: event.title,
-    start: event.date,
+    start: new Date(event.date).toISOString(),
     extendedProps: {
       description: event.description,
       // location: event.??

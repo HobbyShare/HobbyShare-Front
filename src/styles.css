@@ -4,8 +4,8 @@
 
 body {
   /* background-color: rgba(248, 239, 109, 0.808); amarillo */
-  background-color: rgba(158, 231, 97, 0.808);
-  color: white;
+  background-color: rgba(249, 250, 251, 1);
+  color: rgba(28, 25, 23, 1);
   min-height: 100vh;
 
 }
