@@ -1,49 +1,143 @@
-<p>events-list works!</p>
 
-<button (click)="goToCreateEvent()" class="bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl transform hover:scale-105">
-  Crea un evento
-</button>
-
-@if (eventsService.events()) {
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    @for (event of eventsService.events(); track event._id) {
-      <div class="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-xl transition-shadow duration-300">
-        <h3 class="font-bold">{{ event.title }}</h3>
-        <p class="text-sm text-gray-600 pt-2 line-clamp-6">
-          <span class="strongKey">Descripción:</span> {{ event.description }}
-        </p>
-        <p class="text-sm text-gray-600 pt-2 line-clamp-6">
-          <span class="strongKey">Creador:</span> {{ event.creatorUser }}
-          <span class="strongKey">CreadorId:</span> {{ event.creatorId }}
-        </p>
-        <p class="text-sm text-gray-600 pt-2 line-clamp-6">
-          <span class="strongKey">num. participantes:</span> {{ event.participants.length }}
-        </p>
-
-        <!-- ⬅️ Solo mostrar si es el creador -->
-        @if (isEventCreator(event)) {
-          <button type="button" class="border-2 m-2 bg-blue-600 hover:bg-blue-700 text-white"
-                  (click)="goToEditEvent(event._id)">
-            Modificar
-          </button>
-          <button type="button" class="border-2 m-2 bg-red-600 hover:bg-red-700 text-white"
-                  (click)="goTodeleteEvent(event)">
-            Borrar Ev
-          </button>
-        }
-
-        <!-- ⬅️ Siempre mostrar Join/Leave -->
-        <button type="button" class="border-2 bg-green-600 hover:bg-green-700 text-white"
-                (click)="goToJoinEvent(event._id)">
-          Join
-        </button>
-        <button type="button" class="border-2 bg-yellow-600 hover:bg-yellow-700 text-white"
-                (click)="goToLeaveEvent(event._id)">
-          Leave
-        </button>
-      </div>
-    }
+<div class="p-4 md:p-8 max-w-7xl mx-auto">
+  <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
+    <h2 class="text-3xl md:text-4xl font-bold text-gray-600">Eventos disponibles</h2>
+    <button
+      (click)="goToCreateEvent()"
+      class="bg-linear-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2">
+      <span class="text-xl">➕</span>
+      Crear evento
+    </button>
   </div>
-} @else {
-  <h2>No hay eventos</h2>
-}
+
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center min-h-[400px] text-gray-600">
+      <div class="w-12 h-12 border-4 border-gray-200 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-lg">Cargando eventos...</p>
+    </div>
+  }
+  @else if (error()) {
+    <div class="text-center p-12 bg-red-50 border-2 border-red-200 rounded-2xl">
+      <div class="text-red-600 text-lg mb-4">{{ error() }}</div>
+      <button
+        (click)="eventsService.loadEvents()"
+        class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5">
+        🔄 Reintentar
+      </button>
+    </div>
+  }
+  @else if (events().length === 0) {
+    <div class="text-center p-16 bg-white rounded-2xl shadow-lg">
+      <div class="text-7xl mb-4">📅</div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">No hay eventos todavía</h3>
+      <p class="text-gray-600 text-lg mb-8">¡Sé el primero en crear un evento!</p>
+      <button
+        (click)="goToCreateEvent()"
+        class="bg-linear-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+        Crear primer evento
+      </button>
+    </div>
+  }
+  <!-- Events Grid -->
+  @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (event of events(); track event._id) {
+        <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col">
+
+          <!-- Card Header -->
+          <div class="bg-linear-to-r from-indigo-500 to-purple-600 text-white p-6">
+            <div class="flex justify-between items-start gap-4">
+              <h3
+                class="text-xl font-bold cursor-pointer hover:opacity-80 transition-opacity flex-1 line-clamp-2"
+                (click)="goToEventDetail(event._id)">
+                {{ event.title }}
+              </h3>
+
+              @if (isEventCreator(event)) {
+                <span class="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                  Tu evento
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="p-6 flex-1">
+            <p class="text-gray-600 leading-relaxed mb-6 line-clamp-3">
+              {{ event.description }}
+            </p>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 text-gray-700">
+                <span class="text-lg">👤</span>
+                <span class="font-medium text-sm">{{ event.creatorUser }}</span>
+              </div>
+
+              <div class="flex items-center gap-2 text-gray-700">
+                <span class="text-lg">👥</span>
+                <span class="font-medium text-sm">{{ event.participants.length }} participantes</span>
+              </div>
+
+              <div class="flex items-center gap-2 text-gray-700">
+                <span class="text-lg">📅</span>
+                <span class="font-medium text-sm">{{ event.date }}</span>
+              </div>
+
+              @if (event.hobby) {
+                <div class="flex items-center gap-2 text-gray-700">
+                  <span class="text-lg">🎯</span>
+                  <span class="font-medium text-sm">{{ Array.isArray(event.hobby) ? event.hobby.join(', ') : event.hobby }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Card Footer -->
+          <div class="p-4 bg-gray-50 border-t border-gray-100 flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="flex-1 min-w-fit bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+              (click)="goToEventDetail(event._id)">
+              👁️ Ver detalles
+            </button>
+
+            @if (isEventCreator(event)) {
+              <button
+                type="button"
+                class="flex-1 min-w-fit bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                (click)="goToEditEvent(event._id)">
+                ✏️ Editar
+              </button>
+              <button
+                type="button"
+                class="flex-1 min-w-fit bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                (click)="deleteEvent(event)">
+                🗑️ Eliminar
+              </button>
+            }
+
+            @else {
+              @if (canJoinEvent(event)) {
+                <button
+                  type="button"
+                  class="flex-1 min-w-fit bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  (click)="joinEvent(event)">
+                  ✅ Unirme
+                </button>
+              }
+
+              @if (canLeaveEvent(event)) {
+                <button
+                  type="button"
+                  class="flex-1 min-w-fit bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  (click)="leaveEvent(event)">
+                  👋 Salir
+                </button>
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
