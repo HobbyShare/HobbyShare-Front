@@ -1,17 +1,14 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
 export class HomeComponent {
-  private router = inject(Router);
 
-  goToEventsList(): void {
-    this.router.navigate(['/events']);
-  }
 
 }

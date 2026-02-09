@@ -1,14 +1,18 @@
-<p>events-list works!</p>
+<div class="flex flex-col justify-center items-center text-center">
 
-<button (click)="goToCreateEvent()" class="bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl transform hover:scale-105">
-  Crea un evento
-</button>
+  <button (click)="goToCreateEvent()" class=" bg-pink-400 hover:bg-pink-300 text-white text-xl font-bold px-8 py-4 mb-7 rounded-4xl shadow-lg
+    transition-all duration-300 hover:shadow-xl transform hover:scale-105 ">
+    + Create an event
+  </button>
+
+</div>
 
 @if (eventsService.events()) {
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    @for (event of eventsService.events(); track event._id) {
-      <div class="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-xl transition-shadow duration-300">
-        <h3 class="font-bold">{{ event.title }}</h3>
+    @for (event of eventsService.events(); track event._id; let i = $index) {
+      <div class="bg-white rounded-4xl shadow p-4 cursor-pointer hover:shadow-xl transition-shadow duration-300"
+         >
+        <h3 class="font-bold text-stone-900">{{ event.title }}</h3>
         <p class="text-sm text-gray-600 pt-2 line-clamp-6">
           <span class="strongKey">Descripción:</span> {{ event.description }}
         </p>

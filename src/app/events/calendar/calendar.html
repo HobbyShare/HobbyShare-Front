@@ -1,4 +1,114 @@
-<full-calendar
-  [options]="options()"
-  [events]="events()"
-></full-calendar>
+<div class="calendar-container p-4">
+  @if (isLoading()) {
+    <div class="loading text-center p-8">
+      <p>Loading calendar...</p>
+    </div>
+  } @else {
+    <full-calendar [options]="options()"></full-calendar>
+  }
+
+  <!-- ⬅️ Botón de prueba (TEMPORAL para debugging) -->
+  <button
+    class="btn btn-primary mt-4"
+    (click)="openModal()">
+    🧪 Test Modal (DEBUG)
+  </button>
+</div>
+
+<!-- ⬅️ MODAL DEL EVENTO -->
+<dialog id="event_modal" class="modal">
+  <div class="modal-box">
+    <!-- Botón cerrar -->
+    <form method="dialog">
+      <button
+        type="button"
+        class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+        (click)="closeModal()">
+        ✕
+      </button>
+    </form>
+
+    @if (selectedEvent()) {
+      <h3 class="text-2xl font-bold mb-4">{{ selectedEvent()!.title }}</h3>
+
+      <div class="space-y-3">
+        <div>
+          <strong>📝 Description:</strong>
+          <p class="text-gray-700 mt-1">{{ selectedEvent()!.description }}</p>
+        </div>
+
+        <div>
+          <strong>📅 Date:</strong>
+          <p>{{ selectedEvent()!.date | date:'fullDate' }}</p>
+        </div>
+
+        <div>
+          <strong>🏷️ Hobby:</strong>
+          <p>{{ selectedEvent()!.hobby }}</p>
+        </div>
+
+        <div>
+          <strong>👤 Creator:</strong>
+          <p>{{ selectedEvent()!.creatorUser }}</p>
+        </div>
+
+        <div>
+          <strong>👥 Participants:</strong>
+          <p>{{ selectedEvent()!.participants.length }} people joined</p>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="modal-action mt-6">
+        @if (isCreator()) {
+          <button
+            type="button"
+            class="border-2 border-amber-100 text-stone-900 bg-amber-100 rounded-xl
+                  shadow-lg hover:shadow-2xl hover:scale-105 hover:bg-amber-200
+                  hover:text-gray-950 transition-all duration-300 px-3 md:px-5 py-1.5 md:py-2
+                  font-semibold text-sm md:text-base"
+            (click)="deleteEvent()">
+            🗑️ Delete Event
+          </button>
+        } @else if (isParticipant()) {
+          <button
+            type="button"
+            class="border-2 border-amber-100 text-stone-900 bg-amber-100 rounded-xl
+                  shadow-lg hover:shadow-2xl hover:scale-105 hover:bg-amber-200
+                  hover:text-gray-950 transition-all duration-300 px-3 md:px-5 py-1.5 md:py-2
+                  font-semibold text-sm md:text-base"
+            (click)="leaveEvent()">
+            🚪 Leave Event
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="border-2 border-amber-100 text-stone-900 bg-amber-100 rounded-xl
+                  shadow-lg hover:shadow-2xl hover:scale-105 hover:bg-amber-200
+                  hover:text-gray-950 transition-all duration-300 px-3 md:px-5 py-1.5 md:py-2
+                  font-semibold text-sm md:text-base"
+            (click)="joinEvent()">
+            ✅ Join Event
+          </button>
+        }
+
+        <button
+          type="button"
+          class="border-2 border-amber-100 text-stone-900 bg-amber-100 rounded-xl
+                  shadow-lg hover:shadow-2xl hover:scale-105 hover:bg-amber-200
+                  hover:text-gray-950 transition-all duration-300 px-3 md:px-5 py-1.5 md:py-2
+                  font-semibold text-sm md:text-base"
+          (click)="closeModal()">
+          Close
+        </button>
+      </div>
+    } @else {
+      <p>No event selected</p>
+    }
+  </div>
+
+  <!-- Fondo del modal (clickeable para cerrar) -->
+  <form method="dialog" class="modal-backdrop">
+    <button type="button" (click)="closeModal()">close</button>
+  </form>
+</dialog>

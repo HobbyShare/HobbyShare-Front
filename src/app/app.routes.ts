@@ -6,6 +6,7 @@ import { CalendarComponent } from './events/calendar/calendar';
 import { EventsList } from './events/events-list/events-list';
 import { EventForm } from './events/event-form/event-form';
 import { Dashboard } from './dashboard/dashboard/dashboard';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
 
@@ -24,18 +25,17 @@ export const routes: Routes = [
     component: RegisterComponent,
   },
 
-
-  { path: 'events', component: EventsList }, // , canActivate: [authGuard]
-  { path: 'events/new', component: EventForm }, // , canActivate: [authGuard]
-  { path: 'events/:id/edit', component: EventForm }, // , canActivate: [authGuard]
-
   {
-    path: 'calendar',
-    component: CalendarComponent,
-  },
-  {
-    path: 'dashboard',
-    component: Dashboard,
+    path: '',
+    canActivate: [authGuard],
+    children: [
+        { path: 'events', component: EventsList } ,
+        { path: 'events/new', component: EventForm },
+        { path: 'events/:id/edit', component: EventForm },
+        { path: 'calendar', component: CalendarComponent },
+        { path: 'dashboard', component: Dashboard },
+        //...falta MAPA
+    ]
   },
 
   {
