@@ -1,121 +1,136 @@
+<div class="min-h-screen bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 md:p-8">
+  <div class="max-w-4xl mx-auto">
 
-<form>
-  <div class="budget-list-card">
-    <h3 class="list-card-title">Datos del evento:</h3>
-    <div class="form-wrapper">
-      <div>
-        <label for="title">Título: </label>
-        @if (isEditMode()) {
-          <input type="text" id="title-readonly" [value]="eventFormModel().title" readonly class="readonly-field">
-        } @else {
-          <input type="text" id="title" [formField]="createEventForm.title" placeholder="Título del evento" aria-label="Titulo">
-        }
-      </div>
-      <div>
-        <label for="description">Descripción: </label>
-        <input type="text" id="description" [formField]="createEventForm.description" placeholder="Descripción" aria-label="Descripcion">
-      </div>
-      <div>
-        <label for="hobby">Escoger categoría del hobby: </label>
-        @if (isEditMode()) {
-          <select id="hobby-readonly" disabled class="readonly-field">
-            <option [value]="eventFormModel().hobby" selected>
-              {{ eventFormModel().hobby }}
-            </option>
-          </select>
-        } @else {
-          <select id="hobby" [formField]="createEventForm.hobby">
-            <option value="" disabled>Selecciona un hobby</option>
-            @for (hobby of hobbies; track hobby) {
-              <option [value]="hobby">{{ hobby }}</option>
-            }
-          </select>
-        }
-      </div>
-      <div>
-        <label for="date">Fecha: </label>
-        <input type="date" id="date" [formField]="createEventForm.date" placeholder="Fecha" aria-label="Fecha">
-      </div>
-
-      <!-- SECCIÓN DE UBICACIÓN -->
-      <div class="location-section">
-        <label>Ubicación del evento: </label>
-
-        @if (hasLocation) {
-          <!-- Preview de ubicación seleccionada -->
-          <div class="location-preview">
-            <div class="preview-header">
-              <span class="location-icon">📍</span>
-              <div class="location-details">
-                <span class="location-label">Ubicación seleccionada</span>
-                <span class="location-coords">{{ locationText }}</span>
-              </div>
-            </div>
-
-            <!-- Mini mapa de preview -->
-            <div class="mini-map">
-              <iframe
-                width="600"
-                height="450"
-                style="border:0;"
-                [src]="getSafeUrl()"
-                allowfullscreen>
-              </iframe>
-            </div>
-
-            <div class="location-actions">
-              <button
-                type="button"
-                class="btn-change-location"
-                (click)="openLocationPicker()">
-                📝 Cambiar ubicación
-              </button>
-              <button
-                type="button"
-                class="btn-remove-location"
-                (click)="removeLocation()">
-                🗑️ Eliminar
-              </button>
-            </div>
-          </div>
-        } @else {
-          <!-- Botón para abrir el selector -->
-          <div class="location-placeholder">
-            <button
-              type="button"
-              class="btn-select-location"
-              (click)="openLocationPicker()">
-              📍 Seleccionar ubicación en el mapa
-            </button>
-            <p class="helper-text">
-              Haz clic para abrir el mapa y seleccionar dónde se realizará el evento
-            </p>
-          </div>
-        }
-
-        @if (!hasLocation && buttonSubmitClicked()) {
-          <div class="location-error">
-            <small>La ubicación es obligatoria</small>
-          </div>
-        }
-      </div>
-
-      @if (isEditMode()) {
-        <button type="button" class="submit-button" (click)="onSubmitEventForm()">Guardar modificaciones</button>
-      } @else {
-        <button type="button" class="submit-button" (click)="onSubmitEventForm()">Crear evento</button>
-      }
+    <div class="flex justify-between items-center mb-8">
+      <button
+        type="button"
+        class="bg-white/20 backdrop-blur-sm text-white border-2 border-white px-6 py-2 rounded-xl font-semibold hover:bg-white hover:text-indigo-600 transition-all duration-300 hover:-translate-x-1"
+        (click)="goBack()">
+        ← Volver
+      </button>
+      <h1 class="text-3xl font-bold text-white drop-shadow-md">
+        {{ isEditMode() ? 'Editar Evento' : 'Crear Nuevo Evento' }}
+      </h1>
     </div>
 
-    @if (!this.createEventForm().valid() && this.buttonSubmitClicked()) {
-      <div class="form-error-message">
-        <small>S'han d'omplir tots els camps de dades</small>
-      </div>
-    }
-  </div>
-</form>
+    <form class="space-y-6">
+      <div class="bg-white rounded-3xl p-6 md:p-10 shadow-2xl transition-all duration-300">
 
-<!-- Modal de selección de ubicación -->
+        <h3 class="text-xl font-bold text-gray-800 mb-8 pb-3 border-b-2 border-indigo-500 flex items-center gap-2">
+          📋 Datos del evento
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div class="flex flex-col gap-2">
+            <label for="title" class="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Título</label>
+            @if (isEditMode()) {
+              <input type="text" id="title-readonly" [value]="eventFormModel().title" readonly
+                class="w-full px-4 py-3 bg-gray-100 border-2 border-gray-200 rounded-xl text-gray-500 cursor-not-allowed">
+            } @else {
+              <input type="text" id="title" [formField]="createEventForm.title" placeholder="Ej: Torneo de Pádel"
+                class="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:border-indigo-500 focus:ring-0 outline-none transition-all text-gray-900 placeholder:text-gray-400">
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="hobby" class="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Categoría</label>
+            @if (isEditMode()) {
+              <select id="hobby-readonly" disabled
+                class="w-full px-4 py-3 bg-gray-100 border-2 border-gray-200 rounded-xl text-gray-500 cursor-not-allowed appearance-none">
+                <option [value]="eventFormModel().hobby" selected>{{ eventFormModel().hobby }}</option>
+              </select>
+            } @else {
+              <select id="hobby" [formField]="createEventForm.hobby"
+                class="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:border-indigo-500 focus:ring-0 outline-none transition-all bg-white cursor-pointer text-gray-900">
+                <option value="" disabled>Selecciona un hobby</option>
+                @for (hobby of hobbies; track hobby) {
+                  <option [value]="hobby">{{ hobby }}</option>
+                }
+              </select>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="date" class="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Fecha</label>
+            <input type="date" id="date" [formField]="createEventForm.date"
+              class="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:border-indigo-500 focus:ring-0 outline-none transition-all text-gray-900">
+          </div>
+
+          <div class="flex flex-col gap-2 md:col-span-2">
+            <label for="description" class="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Descripción</label>
+            <textarea id="description" [formField]="createEventForm.description" rows="3" placeholder="Cuéntanos más sobre el evento..."
+              class="w-full px-4 py-3 border-2 border-gray-100 rounded-xl focus:border-indigo-500 focus:ring-0 outline-none transition-all resize-none text-gray-900 placeholder:text-gray-400"></textarea>
+          </div>
+        </div>
+
+        <div class="mt-10">
+          <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-indigo-500 flex items-center gap-2">
+            📍 Ubicación
+          </h3>
+
+          @if (hasLocation) {
+            <div class="bg-indigo-50 rounded-2xl p-4 border-2 border-indigo-100">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="bg-indigo-500 text-white p-3 rounded-xl shadow-lg">📍</div>
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-indigo-900">Ubicación confirmada</span>
+                  <span class="text-xs font-mono text-indigo-600">{{ locationText }}</span>
+                </div>
+              </div>
+
+              <div class="rounded-xl overflow-hidden shadow-inner bg-gray-200 border border-gray-300">
+                <iframe width="100%" height="250" style="border:0;" [src]="getSafeUrl()" allowfullscreen></iframe>
+              </div>
+
+              <div class="flex gap-3 mt-4">
+                <button type="button" (click)="openLocationPicker()"
+                  class="flex-1 bg-white border-2 border-indigo-200 text-indigo-600 py-2 rounded-xl font-semibold hover:bg-indigo-50 transition-all">
+                  📝 Cambiar
+                </button>
+                <button type="button" (click)="removeLocation()"
+                  class="flex-1 bg-red-50 text-red-600 border-2 border-red-100 py-2 rounded-xl font-semibold hover:bg-red-100 transition-all">
+                  🗑️ Eliminar
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="border-2 border-dashed border-gray-200 rounded-2xl p-8 text-center flex flex-col items-center gap-4 hover:border-indigo-300 hover:bg-indigo-50/30 transition-all">
+              <div class="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-2xl">📍</div>
+              <div>
+                <button type="button" (click)="openLocationPicker()"
+                  class="bg-indigo-500 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-600 hover:-translate-y-1 transition-all">
+                  Seleccionar ubicación en mapa
+                </button>
+                <p class="text-sm text-gray-400 mt-3">Es obligatorio indicar dónde será el evento</p>
+              </div>
+            </div>
+          }
+
+          @if (!hasLocation && buttonSubmitClicked()) {
+            <div class="mt-4 p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm font-medium animate-pulse">
+              ⚠️ La ubicación es obligatoria para continuar
+            </div>
+          }
+        </div>
+
+        <div class="mt-12">
+          <button type="button" (click)="onSubmitEventForm()"
+            class="w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all active:scale-95">
+            {{ isEditMode() ? '✨ Guardar cambios' : '🚀 Crear evento' }}
+          </button>
+
+          @if (!this.createEventForm().valid() && this.buttonSubmitClicked()) {
+            <p class="text-center text-red-500 font-semibold text-sm mt-4">
+              Por favor, rellena todos los campos obligatorios
+            </p>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
 <app-location-picker-modal
   [isOpen]="isLocationModalOpen"
   [initialCoords]="selectedLocation() ?? undefined"

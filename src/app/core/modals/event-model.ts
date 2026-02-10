@@ -5,21 +5,21 @@ export interface EventModel {
   title: string;
   description: string;
   hobby: Hobby;
-  date: string;
+  date: Date;
   lat: number;
   lng: number;
   creatorId: string;
   creatorUser: string;
   participants: string[];
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface CreateEventDto {
   title: string;
   description: string;
   hobby: string;
-  date: string;
+  date: Date;
   lat: number;
   lng: number;
 }

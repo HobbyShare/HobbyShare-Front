@@ -1,10 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { EventsService } from '../../core/services/events.service';
 import { AuthService } from '../../core/services/auth.service';
 import { EventModel } from '../../core/modals/event-model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { NavigationService } from '../../core/services/navigation.service';
 
 @Component({
   selector: 'app-event-detail',
@@ -18,8 +19,16 @@ export class EventDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private sanitizer = inject(DomSanitizer);
+  private eventId = signal<string | null>(null);
+  private navigationService = inject(NavigationService);
 
-  event = signal<EventModel | null>(null);
+  event = computed(() => {
+    const id = this.eventId();
+    if (!id) return null;
+
+    return this.eventsService.events().find(e => e._id === id) || null;
+  });
+
   isLoading = signal(false);
   error = signal<string | null>(null);
 
@@ -35,26 +44,26 @@ export class EventDetail implements OnInit {
 
     if (eventId) {
       this.loadEvent(eventId);
+    this.eventId.set(eventId);
     } else {
       this.router.navigate(['/events']);
     }
   }
 
   private loadEvent(id: string): void {
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    this.eventsService.getEventById(id).subscribe({
-      next: (event) => {
-        this.event.set(event);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading event:', err);
-        this.error.set('No se pudo cargar el evento');
-        this.isLoading.set(false);
-      }
-    });
+    // Si el evento no está en el servicio, lo descargamos
+    const existingEvent = this.eventsService.events().find(e => e._id === id);
+    if (!existingEvent) {
+      this.isLoading.set(true);
+      this.eventsService.getEventById(id).subscribe({
+        next: (event) => {
+          // Esto hará que el 'computed' de arriba se active.
+          this.eventsService['_events'].update(events => [...events, event]);
+          this.isLoading.set(false);
+        },
+        error: () => this.isLoading.set(false)
+      });
+    }
   }
 
   goToEdit(): void {
@@ -63,10 +72,12 @@ export class EventDetail implements OnInit {
   }
 
   goBack(): void {
-    if (window.history.length > 1) {
-      window.history.back();
+    const previousUrl = this.navigationService.getPreviousUrl();
+
+    if (previousUrl) {
+      this.router.navigateByUrl(previousUrl);
     } else {
-      this.router.navigate(['/events']);
+      this.router.navigate(['/events']); // Fallback por si entran directos por URL
     }
   }
 
@@ -84,9 +95,6 @@ export class EventDetail implements OnInit {
     if (!eventId) return;
 
     this.eventsService.handleJoinEvent(event);
-
-    // Recargar el evento después de un delay para ver los cambios
-    setTimeout(() => this.refreshCurrentEvent(), 300);
   }
 
   leaveEvent(): void {
@@ -96,9 +104,6 @@ export class EventDetail implements OnInit {
     if (!eventId) return;
 
     this.eventsService.handleLeaveEvent(event);
-
-    // Recargar el evento después de un delay para ver los cambios
-    setTimeout(() => this.refreshCurrentEvent(), 300);
   }
 
   // HELPERS PARA EL TEMPLATE
@@ -139,18 +144,4 @@ export class EventDetail implements OnInit {
     const hobby = this.event()?.hobby;
     return Array.isArray(hobby) ? hobby.join(', ') : hobby || 'N/A';
   }
-
-  private refreshCurrentEvent(): void {
-    const eventId = this.event()?._id;
-    if (!eventId) return;
-
-    this.eventsService.getEventById(eventId).subscribe({
-      next: (updatedEvent) => {
-        this.event.set(updatedEvent);
-      },
-      error: (err) => {
-        console.error('Error recargando evento:', err);
-      }
-    });
-}
 }
