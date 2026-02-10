@@ -3,6 +3,7 @@ import * as L from 'leaflet';
 import { EventsService } from '../../core/services/events.service';
 import { MapService } from '../../core/services/map.service';
 import { Router } from '@angular/router';
+import { NavigationService } from '../../core/services/navigation.service';
 
 @Component({
   selector: 'app-map',
@@ -14,6 +15,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private eventsService = inject(EventsService);
   private mapService = inject(MapService);
   private router = inject(Router);
+  private navigationService = inject(NavigationService);
 
   // Configuración del componente
   @Input() mode: 'view' | 'select' = 'view';
@@ -58,6 +60,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     }, 0);
     (window as any).navigateToEvent = (eventId: string) => {
+      this.navigationService.setPreviousUrl(this.router.url); // Guarda si vienes de /events o /map
       this.router.navigate(['/events', eventId]);
     };
   }

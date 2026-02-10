@@ -3,6 +3,8 @@ import { EventsService } from '../../core/services/events.service';
 import { EventModel } from '../../core/modals/event-model';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { NavigationService } from '../../core/services/navigation.service';
+
 
 
 @Component({
@@ -14,6 +16,7 @@ import { DatePipe } from '@angular/common';
 export class EventsList implements OnInit{
   eventsService = inject(EventsService);
   private router = inject(Router);
+  private navigationService = inject(NavigationService);
 
   events = this.eventsService.events;
   isLoading = this.eventsService.loading;
@@ -30,6 +33,7 @@ export class EventsList implements OnInit{
   }
 
   goToEventDetail(eventId: string | undefined): void {
+    this.navigationService.setPreviousUrl(this.router.url); 
     this.eventsService.navigateToDetail(eventId);
   }
 

@@ -7,6 +7,7 @@ import { Hobby } from '../../core/enums/hobby.enum';
 import { LocationPickerModal } from '../location-picker-modal/location-picker-modal';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser'; // <--- Importación clave
+import { NavigationService } from '../../core/services/navigation.service';
 
 @Component({
   selector: 'app-event-form',
@@ -19,6 +20,7 @@ export class EventForm implements OnInit {
   constructor(private sanitizer: DomSanitizer) {};
 
   private eventsService = inject(EventsService);
+  private navigationService = inject(NavigationService);
   private route = inject(ActivatedRoute);
   router = inject(Router); // público para usarlo en el template
 
@@ -125,7 +127,7 @@ export class EventForm implements OnInit {
       },
       error: (err) => {
         console.error('❌ Error:', err);
-        
+
       }
     });
   }
@@ -186,5 +188,16 @@ export class EventForm implements OnInit {
     const lng = this.selectedLocation()?.lng;
     const url = `https://maps.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  goBack(): void {
+    const previousUrl = this.navigationService.getPreviousUrl();
+
+    if (previousUrl) {
+      this.router.navigateByUrl(previousUrl);
+    } else {
+      // Fallback: si no hay historial guardado, lo mandamos al listado general
+      this.router.navigate(['/events']);
+    }
   }
 }
