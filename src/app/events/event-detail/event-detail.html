@@ -1,5 +1,5 @@
 
-<div class="min-h-screen bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500 p-4 md:p-8">
+<div class="min-h-screen  p-4 md:p-8">
   @if (isLoading()) {
     <div class="flex flex-col items-center justify-center min-h-[60vh] text-white">
       <div class="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin mb-4"></div>
@@ -12,7 +12,7 @@
       <h2 class="text-3xl font-bold mb-2">Error</h2>
       <p class="text-lg mb-6">{{ error() }}</p>
       <button
-        class="bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300"
+        class="bg-white text-indigo-600 px-6 py-3 rounded-3xl font-semibold hover:bg-gray-100 transition-all duration-300"
         (click)="goBack()">
         ← Volver a eventos
       </button>
@@ -23,34 +23,34 @@
       <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
         <button
          (click)="goBack()"
-         class="bg-white/20 backdrop-blur-sm text-white border-2 border-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-indigo-600 transition-all duration-300 hover:-translate-x-1 cursor-pointer inline-block text-center decoration-0">
+         class="bg-white hover:bg-indigo-400 text-stone-900  shadow-lg  px-6 py-3 rounded-3xl font-semibold  transition-all duration-300 hover:-translate-x-1 cursor-pointer inline-block text-center decoration-0">
           ← Volver
         </button>
 
         <div class="hidden md:flex gap-3">
           @if (isCreator()) {
             <button
-              class="bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+              class="bg-indigo-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-indigo-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
               (click)="goToEdit()">
-              ✏️ Editar
+              Editar
             </button>
             <button
-              class="bg-red-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-red-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+              class="bg-pink-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-pink-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
               (click)="deleteEvent()">
-              🗑️ Eliminar
+              Eliminar
             </button>
           } @else {
             @if (isParticipant()) {
               <button
-                class="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                class="bg-pink-300 text-stone-900 px-6 py-3 rounded-3xl font-semibold hover:bg-pink-400 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                 (click)="leaveEvent()">
-                👋 Salir del evento
+                Salir del evento
               </button>
             } @else {
               <button
-                class="bg-green-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                class="bg-emerald-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-emerald-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                 (click)="joinEvent()">
-                ✅ Unirme al evento
+                Unirme al evento
               </button>
             }
           }
@@ -58,12 +58,12 @@
       </div>
 
       <div class="flex items-start gap-4 mb-8 flex-wrap">
-        <h1 class="text-4xl md:text-5xl font-bold text-white drop-shadow-lg flex-1">
+        <h1 class="text-4xl md:text-5xl font-bold text-stone-900  flex-1">
           {{ eventData.title }}
         </h1>
         @if (isCreator()) {
-          <span class="bg-yellow-400 text-gray-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-            👤 Tu evento
+          <span class="bg-indigo-400 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+            Tu evento
           </span>
         }
       </div>
@@ -71,13 +71,13 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div class="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
           <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-indigo-500 flex items-center gap-2">
-            📋 Información básica
+            Información básica
           </h3>
 
           <div class="space-y-4">
             <div>
               <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-1">Categoría</span>
-              <span class="inline-block bg-linear-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold">
+              <span class="inline-block  bg-indigo-500  text-white px-4 py-2 rounded-3xl font-semibold">
                 {{ getHobbyDisplay() }}
               </span>
             </div>
@@ -108,7 +108,7 @@
 
         <div class="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
           <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-indigo-500 flex items-center gap-2">
-            👤 Creador
+            Creador
           </h3>
 
           <div class="space-y-4">
@@ -134,17 +134,17 @@
         <!-- Mapa de ubicación -->
         <div class="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:col-span-2">
           <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-indigo-500 flex items-center gap-2">
-            📍 Ubicación
+            Ubicación
           </h3>
 
-          <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg mb-4">
+          <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-3xl mb-4">
             <span class="font-semibold text-gray-700">Coordenadas:</span>
             <span class="font-mono text-gray-900">
               {{ eventData.lat.toFixed(6) }}, {{ eventData.lng.toFixed(6) }}
             </span>
           </div>
 
-          <div class="rounded-xl overflow-hidden shadow-lg mb-4">
+          <div class="rounded-3xl overflow-hidden shadow-lg mb-4">
             <iframe
               [src]="getMapUrl()"
               width="100%"
@@ -162,27 +162,27 @@
       <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white shadow-2xl flex gap-2 z-50">
         @if (isCreator()) {
           <button
-            class="flex-1 bg-indigo-500 text-white py-3 rounded-lg font-semibold"
+            class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white py-3 rounded-3xl font-semibold"
             (click)="goToEdit()">
-            ✏️ Editar
+            Editar
           </button>
           <button
-            class="flex-1 bg-red-500 text-white py-3 rounded-lg font-semibold"
+            class="flex-1 bg-pink-500 text-white py-3 rounded-3xl font-semibold"
             (click)="deleteEvent()">
-            🗑️ Eliminar
+            Eliminar
           </button>
         } @else {
           @if (isParticipant()) {
             <button
-              class="w-full bg-orange-500 text-white py-3 rounded-lg font-semibold"
+              class="w-full bg-pink-300 hover:bg-pink-400 text-white py-3 rounded-3xl font-semibold"
               (click)="leaveEvent()">
-              👋 Salir del evento
+              Salir del evento
             </button>
           } @else {
             <button
-              class="w-full bg-green-500 text-white py-3 rounded-lg font-semibold"
+              class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-3xl font-semibold"
               (click)="joinEvent()">
-              ✅ Unirme al evento
+              Unirme al evento
             </button>
           }
         }

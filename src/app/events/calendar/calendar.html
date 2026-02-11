@@ -1,4 +1,4 @@
-<div class="calendar-container p-4">
+<div class="calendar-container p-4  bg-white rounded-lg shadow-md border border-gray-200">
   @if (isLoading()) {
     <div class="loading text-center p-8">
       <p>Loading calendar...</p>
@@ -7,13 +7,7 @@
     <full-calendar [options]="options()"></full-calendar>
   }
 
-  <!-- ⬅️ Botón de prueba (TEMPORAL para debugging) -->
-  <button
-    class="btn btn-primary mt-4"
-    (click)="openModal()">
-    🧪 Test Modal (DEBUG)
-  </button>
-</div>
+
 
 <!-- ⬅️ MODAL DEL EVENTO -->
 <dialog id="event_modal" class="modal">
