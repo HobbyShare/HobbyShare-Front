@@ -24,28 +24,28 @@ describe('EventsList Component', () => {
       title: 'Evento de prueba 1',
       description: 'Descripción del evento 1',
       hobby: Hobby.Sports,
-      date: '2026-03-15',
+      date: new Date('2026-03-15'),
       lat: 41.3851,
       lng: 2.1734,
       creatorId: 'user123',
       creatorUser: 'testUser',
       participants: ['user456'],
-      createdAt: '2026-02-01',
-      updatedAt: '2026-02-01',
+      createdAt: new Date('2026-02-01'),
+      updatedAt: new Date('2026-02-01'),
     },
     {
       _id: '2',
       title: 'Evento de prueba 2',
       description: 'Descripción del evento 2',
       hobby: Hobby.Music,
-      date: '2026-03-20',
+      date: new Date('2026-03-20'),
       lat: 41.4000,
       lng: 2.2000,
       creatorId: 'user456',
       creatorUser: 'otherUser',
       participants: [],
-      createdAt: '2026-02-02',
-      updatedAt: '2026-02-02',
+      createdAt: new Date('2026-02-02'),
+      updatedAt: new Date('2026-02-02'),
     },
   ];
 
@@ -334,35 +334,9 @@ describe('EventsList Component', () => {
       expect(cardContent).toContain('Evento de prueba 1');
       expect(cardContent).toContain('Descripción del evento 1');
       expect(cardContent).toContain('testUser');
-      expect(cardContent).toContain('1 participantes');
+      expect(cardContent).toContain('1 participante');
       expect(cardContent).toContain('2026-03-15');
       expect(cardContent).toContain('Sports');
     });
   });
 });
-
-  // // ✅ Test 1: Renderizado inicial y carga de eventos
-  // it('should load and display events on init', async () => {
-  //   // Verifica que se llame a loadEvents() y se muestren en el DOM
-  // });
-
-  // // ✅ Test 2: Navegación a crear evento
-  // it('should navigate to create event form when clicking create button', async () => {
-  //   // Simula click en "Crear evento" y verifica navegación
-  // });
-
-  // // ✅ Test 3: Estado de loading
-  // it('should show loading spinner while events are loading', async () => {
-  //   // Verifica que aparezca el spinner cuando isLoading() es true
-  // });
-
-  // // ✅ Test 4: Manejo de errores
-  // it('should display error message when events fail to load', async () => {
-  //   // Mockea error del servicio y verifica mensaje de error
-  // });
-
-  // // ✅ Test 5: Interacción con evento (unirse/salir)
-  // it('should allow user to join an event they can join', async () => {
-  //   // Verifica que el botón "Unirme" funcione correctamente
-  // });
-//});
