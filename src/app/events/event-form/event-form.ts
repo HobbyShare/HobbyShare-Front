@@ -64,14 +64,16 @@ export class EventForm implements OnInit {
   private loadEventForEdit(): void {
     this.isLoadingEvent.set(true);
     const id = this.eventId()!;
-
     this.eventsService.getEventById(id).subscribe({
       next: (event) => {
+        const formattedDate = event.date
+                ? new Date(event.date).toISOString().slice(0, 16)
+                : '';
         this.eventFormModel.set({
           title: event.title,
           description: event.description,
           hobby: Array.isArray(event.hobby) ? event.hobby[0] : event.hobby,
-          date: event.date,
+          date: (formattedDate.split('T')[0]) as any,
           lat: event.lat,
           lng: event.lng,
         });
@@ -201,3 +203,4 @@ export class EventForm implements OnInit {
     }
   }
 }
+
