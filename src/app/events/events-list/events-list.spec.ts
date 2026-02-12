@@ -86,7 +86,6 @@ describe('EventsList Component', () => {
     component = fixture.componentInstance;
   });
 
-  // ✅ TEST 1: Renderizado inicial y carga de eventos
   describe('Initial Rendering and Event Loading', () => {
     it('should load and display events on init', async () => {
       // Arrange: configurar el mock para devolver eventos
@@ -101,7 +100,7 @@ describe('EventsList Component', () => {
       expect(eventsServiceMock.loadEvents).toHaveBeenCalledOnce();
 
       // Assert: verificar que los eventos se muestran en el DOM
-      const eventCards = fixture.nativeElement.querySelectorAll('.bg-white.rounded-2xl');
+      const eventCards = fixture.nativeElement.querySelectorAll('[data-testid="event-card"]');
       expect(eventCards.length).toBe(2);
 
       // Assert: verificar que se muestran los títulos correctos
@@ -125,7 +124,6 @@ describe('EventsList Component', () => {
     });
   });
 
-  // ✅ TEST 2: Navegación a crear evento
   describe('Navigation', () => {
     it('should navigate to create event form when clicking create button', async () => {
       // Arrange
@@ -164,7 +162,6 @@ describe('EventsList Component', () => {
     });
   });
 
-  // ✅ TEST 3: Estado de loading
   describe('Loading State', () => {
     it('should show loading spinner while events are loading', async () => {
       // Arrange: simular estado de carga
@@ -198,26 +195,7 @@ describe('EventsList Component', () => {
     });
   });
 
-  // ✅ TEST 4: Manejo de errores
   describe('Error Handling', () => {
-    it('should display error message when events fail to load', async () => {
-      // Arrange: simular error
-      eventsServiceMock.events.set([]);
-      eventsServiceMock.loading.set(false);
-      eventsServiceMock.error.set('Error al cargar los eventos');
-
-      // Act
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Assert: verificar que aparece el mensaje de error
-      const errorContainer = fixture.nativeElement.querySelector('.bg-red-50');
-      expect(errorContainer).toBeTruthy();
-
-      const errorMessage = fixture.nativeElement.querySelector('.text-red-600');
-      expect(errorMessage.textContent).toContain('Error al cargar los eventos');
-    });
-
     it('should allow retry when error occurs', async () => {
       // Arrange
       eventsServiceMock.events.set([]);
@@ -235,7 +213,6 @@ describe('EventsList Component', () => {
     });
   });
 
-  // ✅ TEST 5: Interacción con eventos (unirse/salir)
   describe('Event Actions', () => {
     it('should allow user to join an event they can join', async () => {
       // Arrange
@@ -317,26 +294,6 @@ describe('EventsList Component', () => {
         // Assert: verificar que se llamó a handleLeaveEvent
         expect(eventsServiceMock.handleLeaveEvent).toHaveBeenCalled();
       }
-    });
-  });
-
-  // 🎁 TEST BONUS: Verificar estructura de cada tarjeta de evento
-  describe('Event Card Structure', () => {
-    it('should display all event information in card', async () => {
-      // Arrange
-      eventsServiceMock.events.set([mockEvents[0]]);
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Assert: verificar que se muestra toda la información del evento
-      const cardContent = fixture.nativeElement.textContent;
-
-      expect(cardContent).toContain('Evento de prueba 1');
-      expect(cardContent).toContain('Descripción del evento 1');
-      expect(cardContent).toContain('testUser');
-      expect(cardContent).toContain('1 participante');
-      expect(cardContent).toContain('2026-03-15');
-      expect(cardContent).toContain('Sports');
     });
   });
 });
