@@ -1,6 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LocationPickerModal } from './location-picker-modal';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { signal } from '@angular/core';
+import { vi } from 'vitest';
+
+@Component({
+  selector: 'app-map',
+  template: '',
+  standalone: true
+})
+class MockMapComponent {
+  @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
+}
 
 describe('LocationPickerModal', () => {
   let component: LocationPickerModal;
@@ -8,40 +19,61 @@ describe('LocationPickerModal', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LocationPickerModal]
-    })
-    .compileComponents();
+      imports: [LocationPickerModal, MockMapComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LocationPickerModal);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    component.isOpen = signal(true);
+    fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should be visible when isOpen signal is true', () => {
+    expect(component.isModalOpen).toBe(true);
+
+    const modalContainer = fixture.nativeElement.querySelector('.fixed');
+    expect(modalContainer).not.toBeNull();
   });
 
-  // ✅ Test 1: Apertura y cierre del modal
-  it('should show modal when isOpen is true', () => {
-    // Verifica que el modal se renderice cuando isModalOpen devuelve true
+  it('should update selectedLocation when map emits coordinates', () => {
+    const coords = { lat: 40.41, lng: -3.70 };
+
+    component.onLocationSelected(coords);
+
+    expect(component.selectedLocation()).toEqual(coords);
   });
 
-  it('should close modal when clicking backdrop', async () => {
-    // Simula click en el backdrop y verifica que emita modalClosed
+  it('should emit locationConfirmed and close when a location is selected', () => {
+    const coords = { lat: 10, lng: 20 };
+    const emitSpy = vi.spyOn(component.locationConfirmed, 'emit');
+    const closeSpy = vi.spyOn(component, 'closeModal');
+
+    component.selectedLocation.set(coords);
+    component.confirmLocation();
+
+    expect(emitSpy).toHaveBeenCalledWith(coords);
+    expect(closeSpy).toHaveBeenCalled();
   });
 
-  // ✅ Test 2: Selección de ubicación
-  it('should update selected location when map emits locationSelected', async () => {
-    // Verifica que selectedLocation se actualice
+  it('should show alert if confirming without selecting a location', () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
+
+    component.selectedLocation.set(null);
+    component.confirmLocation();
+
+    expect(alertSpy).toHaveBeenCalled();
+    expect(component.locationConfirmed.emit).not.toBeDefined;
   });
 
-  // ✅ Test 3: Confirmación de ubicación
-  it('should emit locationConfirmed when confirming valid location', async () => {
-    // Selecciona ubicación y confirma, verifica evento emitido
-  });
+  it('should reset selectedLocation and emit modalClosed when closing', () => {
+    const closeEmitSpy = vi.spyOn(component.modalClosed, 'emit');
+    component.selectedLocation.set({ lat: 5, lng: 5 });
 
-  // ✅ Test 4: Validación (ubicación no seleccionada)
-  it('should show alert when confirming without selecting location', async () => {
-    // Intenta confirmar sin seleccionar y verifica alerta
+    component.closeModal();
+
+    expect(component.selectedLocation()).toBeNull();
+    expect(component.isOpen()).toBe(false);
+    expect(closeEmitSpy).toHaveBeenCalled();
   });
 });
