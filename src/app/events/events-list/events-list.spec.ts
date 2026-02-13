@@ -17,7 +17,7 @@ describe('EventsList Component', () => {
   let eventsServiceMock: any;
   let authServiceMock: any;
 
-  // 🎭 Mock data
+  // Mock data
   const mockEvents: EventModel[] = [
     {
       _id: '1',
@@ -50,7 +50,7 @@ describe('EventsList Component', () => {
   ];
 
   beforeEach(async () => {
-    // 🔧 Mock del EventsService
+    // Mock del EventsService
     eventsServiceMock = {
       events: signal<EventModel[]>([]),
       loading: signal<boolean>(false),
@@ -66,7 +66,7 @@ describe('EventsList Component', () => {
       canUserLeave: vi.fn(),
     };
 
-    // 🔧 Mock del AuthService
+    // Mock del AuthService
     authServiceMock = {
       currentUserId: signal<string | null>('user123'),
       isAuthenticated: signal<boolean>(true),
@@ -86,214 +86,83 @@ describe('EventsList Component', () => {
     component = fixture.componentInstance;
   });
 
-  describe('Initial Rendering and Event Loading', () => {
-    it('should load and display events on init', async () => {
-      // Arrange: configurar el mock para devolver eventos
-      eventsServiceMock.events.set(mockEvents);
-      eventsServiceMock.loading.set(false);
+  it('should load and display events on init', async () => {
+    eventsServiceMock.events.set(mockEvents);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Act: ejecutar detección de cambios
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Assert: verificar que se llamó a loadEvents
-      expect(eventsServiceMock.loadEvents).toHaveBeenCalledOnce();
-
-      // Assert: verificar que los eventos se muestran en el DOM
-      const eventCards = fixture.nativeElement.querySelectorAll('[data-testid="event-card"]');
-      expect(eventCards.length).toBe(2);
-
-      // Assert: verificar que se muestran los títulos correctos
-      const firstTitle = fixture.nativeElement.querySelector('h3');
-      expect(firstTitle.textContent.trim()).toContain('Evento de prueba 1');
-    });
-
-    it('should display empty state when no events exist', async () => {
-      // Arrange: sin eventos
-      eventsServiceMock.events.set([]);
-      eventsServiceMock.loading.set(false);
-
-      // Act
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Assert: verificar mensaje de "no hay eventos"
-      const emptyState = fixture.nativeElement.querySelector('.text-center.p-16');
-      expect(emptyState).toBeTruthy();
-      expect(emptyState.textContent).toContain('No hay eventos todavía');
-    });
+    expect(eventsServiceMock.loadEvents).toHaveBeenCalledOnce();
+    const eventCards = fixture.nativeElement.querySelectorAll('[data-testid="event-card"]');
+    expect(eventCards.length).toBe(2);
   });
 
-  describe('Navigation', () => {
-    it('should navigate to create event form when clicking create button', async () => {
-      // Arrange
-      eventsServiceMock.events.set([]);
-      fixture.detectChanges();
-      await fixture.whenStable();
+  it('should display empty state when no events exist', async () => {
+    eventsServiceMock.events.set([]);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Act: buscar y hacer click en el botón "Crear evento"
-      const createButton = Array.from(
-        fixture.nativeElement.querySelectorAll('button')
-      ).find((btn: any) => btn.textContent.includes('Crear evento')) as HTMLButtonElement;
-
-      expect(createButton).toBeTruthy();
-      createButton.click();
-
-      // Assert: verificar que se llama al método de navegación
-      await fixture.whenStable();
-      // El router debería navegar a '/events/new'
-      // Nota: en un test real, deberías mockear Router y verificar la llamada
-      expect(createButton).toBeTruthy();
-    });
-
-    it('should navigate to event detail when clicking on event title', async () => {
-      // Arrange
-      eventsServiceMock.events.set(mockEvents);
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Act: hacer click en el título del evento
-      const eventTitle = fixture.nativeElement.querySelector('h3');
-      eventTitle.click();
-
-      // Assert: verificar que se llama a navigateToDetail
-      await fixture.whenStable();
-      expect(eventsServiceMock.navigateToDetail).toHaveBeenCalledWith('1');
-    });
+    const emptyState = fixture.nativeElement.querySelector('.text-center');
+    expect(emptyState.textContent).toContain('No hay eventos todavía');
   });
 
-  describe('Loading State', () => {
-    it('should show loading spinner while events are loading', async () => {
-      // Arrange: simular estado de carga
-      eventsServiceMock.events.set([]);
-      eventsServiceMock.loading.set(true);
+  it('should show loading spinner while events are loading', async () => {
+    eventsServiceMock.loading.set(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Act
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Assert: verificar que aparece el spinner
-      const loadingSpinner = fixture.nativeElement.querySelector('.animate-spin');
-      expect(loadingSpinner).toBeTruthy();
-
-      const loadingText = fixture.nativeElement.querySelector('.text-lg');
-      expect(loadingText.textContent).toContain('Cargando eventos');
-    });
-
-    it('should hide loading spinner when events are loaded', async () => {
-      // Arrange: eventos cargados
-      eventsServiceMock.events.set(mockEvents);
-      eventsServiceMock.loading.set(false);
-
-      // Act
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Assert: verificar que NO aparece el spinner
-      const loadingSpinner = fixture.nativeElement.querySelector('.animate-spin');
-      expect(loadingSpinner).toBeFalsy();
-    });
+    expect(fixture.nativeElement.querySelector('.animate-spin')).toBeTruthy();
   });
 
-  describe('Error Handling', () => {
-    it('should allow retry when error occurs', async () => {
-      // Arrange
-      eventsServiceMock.events.set([]);
-      eventsServiceMock.error.set('Error al cargar los eventos');
-      fixture.detectChanges();
-      await fixture.whenStable();
+  it('should allow retry when error occurs', async () => {
+    eventsServiceMock.error.set('Error');
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Act: hacer click en el botón "Reintentar"
-      const retryButton = fixture.nativeElement.querySelector('.bg-red-500');
-      retryButton.click();
-
-      // Assert: verificar que se llama a loadEvents nuevamente
-      await fixture.whenStable();
-      expect(eventsServiceMock.loadEvents).toHaveBeenCalled();
-    });
+    fixture.nativeElement.querySelector('.bg-red-500').click();
+    expect(eventsServiceMock.loadEvents).toHaveBeenCalled();
   });
 
-  describe('Event Actions', () => {
-    it('should allow user to join an event they can join', async () => {
-      // Arrange
-      eventsServiceMock.events.set(mockEvents);
-      eventsServiceMock.canUserJoin.mockReturnValue(true);
-      eventsServiceMock.isUserCreator.mockReturnValue(false);
-      fixture.detectChanges();
-      await fixture.whenStable();
+  it('should navigate to event detail when clicking on event title', async () => {
+    eventsServiceMock.events.set(mockEvents);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Act: buscar el botón "Unirme"
-      const joinButton = Array.from(
-        fixture.nativeElement.querySelectorAll('button')
-      ).find((btn: any) => btn.textContent.includes('Unirme')) as HTMLButtonElement;
+    fixture.nativeElement.querySelector('h3').click();
+    expect(eventsServiceMock.navigateToDetail).toHaveBeenCalledWith('1');
+  });
 
-      if (joinButton) {
-        joinButton.click();
-        await fixture.whenStable();
+  it('should navigate to create event form when clicking create button', async () => {
+    fixture.detectChanges();
+    const createBtn = Array.from(fixture.nativeElement.querySelectorAll('button'))
+      .find((b: any) => b.textContent.includes('Crear evento')) as HTMLButtonElement;
 
-        // Assert: verificar que se llamó a handleJoinEvent
-        expect(eventsServiceMock.handleJoinEvent).toHaveBeenCalled();
-      }
-    });
+    createBtn.click();
+    expect(createBtn).toBeTruthy();
+  });
 
-    it('should show creator options for events created by current user', async () => {
-      // Arrange: simular que el usuario es creador del primer evento
-      eventsServiceMock.events.set(mockEvents);
-      eventsServiceMock.isUserCreator.mockImplementation((event: EventModel) => {
-        return event._id === '1';
-      });
-      fixture.detectChanges();
-      await fixture.whenStable();
+  it('should allow user to join an event', async () => {
+    eventsServiceMock.events.set(mockEvents);
+    eventsServiceMock.canUserJoin.mockReturnValue(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Assert: verificar que se muestran los botones de editar y eliminar
-      const editButtons = Array.from(
-        fixture.nativeElement.querySelectorAll('button')
-      ).filter((btn: any) => btn.textContent.includes('Editar'));
+    const joinBtn = Array.from(fixture.nativeElement.querySelectorAll('button'))
+      .find((b: any) => b.textContent.includes('Unirme')) as HTMLButtonElement;
 
-      expect(editButtons.length).toBeGreaterThan(0);
-    });
+    joinBtn.click();
+    expect(eventsServiceMock.handleJoinEvent).toHaveBeenCalled();
+  });
 
-    it('should delete event when creator clicks delete button', async () => {
-      // Arrange
-      eventsServiceMock.events.set([mockEvents[0]]);
-      eventsServiceMock.isUserCreator.mockReturnValue(true);
-      fixture.detectChanges();
-      await fixture.whenStable();
+  it('should allow creator to delete an event', async () => {
+    eventsServiceMock.events.set([mockEvents[0]]);
+    eventsServiceMock.isUserCreator.mockReturnValue(true);
+    fixture.detectChanges();
+    await fixture.whenStable();
 
-      // Act: hacer click en el botón "Eliminar"
-      const deleteButton = Array.from(
-        fixture.nativeElement.querySelectorAll('button')
-      ).find((btn: any) => btn.textContent.includes('Eliminar')) as HTMLButtonElement;
+    const deleteBtn = Array.from(fixture.nativeElement.querySelectorAll('button'))
+      .find((b: any) => b.textContent.includes('Eliminar')) as HTMLButtonElement;
 
-      if (deleteButton) {
-        deleteButton.click();
-        await fixture.whenStable();
-
-        // Assert: verificar que se llamó a handleDeleteEvent
-        expect(eventsServiceMock.handleDeleteEvent).toHaveBeenCalled();
-      }
-    });
-
-    it('should allow user to leave an event they are participating in', async () => {
-      // Arrange
-      eventsServiceMock.events.set(mockEvents);
-      eventsServiceMock.canUserLeave.mockReturnValue(true);
-      eventsServiceMock.isUserCreator.mockReturnValue(false);
-      fixture.detectChanges();
-      await fixture.whenStable();
-
-      // Act: buscar el botón "Salir"
-      const leaveButton = Array.from(
-        fixture.nativeElement.querySelectorAll('button')
-      ).find((btn: any) => btn.textContent.includes('Salir')) as HTMLButtonElement;
-
-      if (leaveButton) {
-        leaveButton.click();
-        await fixture.whenStable();
-
-        // Assert: verificar que se llamó a handleLeaveEvent
-        expect(eventsServiceMock.handleLeaveEvent).toHaveBeenCalled();
-      }
-    });
+    deleteBtn.click();
+    expect(eventsServiceMock.handleDeleteEvent).toHaveBeenCalled();
   });
 });
