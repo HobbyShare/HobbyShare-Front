@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LocationPickerModal } from './location-picker-modal';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core';
 import { signal } from '@angular/core';
 import { vi } from 'vitest';
+import { MapService } from '../../core/services/map.service';
 
 @Component({
   selector: 'app-map',
@@ -16,11 +17,19 @@ class MockMapComponent {
 describe('LocationPickerModal', () => {
   let component: LocationPickerModal;
   let fixture: ComponentFixture<LocationPickerModal>;
-
+  const mockMapService = {
+    initMap: vi.fn(),
+    destroyMap: vi.fn(),
+  };
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LocationPickerModal, MockMapComponent],
-    }).compileComponents();
+      providers: [
+        // 2. Inyecta el mock para que el MapComponent real no haga nada
+        { provide: MapService, useValue: mockMapService }
+      ],      schemas: [NO_ERRORS_SCHEMA]
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(LocationPickerModal);
     component = fixture.componentInstance;
