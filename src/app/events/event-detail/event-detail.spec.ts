@@ -5,12 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
 
 describe('EventDetail', () => {
   let component: EventDetail;
   let fixture: ComponentFixture<EventDetail>;
   let mockEventsService: any;
   let mockRouter: any;
+  let eventsListSignal = signal<any[]>([]);
 
   // Mock completo
   const mockEvent = {
@@ -28,20 +30,32 @@ describe('EventDetail', () => {
   };
 
   beforeEach(async () => {
+    eventsListSignal.set([]);
+
     mockEventsService = {
-      // Señales
-      events: signal([mockEvent]),
-      _events: { update: vi.fn() },
-      isUserCreator: vi.fn().mockReturnValue(false),
-      isUserParticipant: vi.fn().mockReturnValue(false),
-      canUserJoin: vi.fn().mockReturnValue(true),
-      canUserLeave: vi.fn().mockReturnValue(false),
-      getEventById: vi.fn(),
+      events: eventsListSignal,
+      _events: {
+        update: vi.fn((updateFn) => {
+          const currentEvents = eventsListSignal();
+          eventsListSignal.set(updateFn(currentEvents));
+        })
+      },
+
+      isUserCreator: vi.fn(),
+      isUserParticipant: vi.fn(),
+      canUserJoin: vi.fn(),
+      canUserLeave: vi.fn(),
+
+      getEventById: vi.fn().mockReturnValue(of(mockEvent)),
       handleJoinEvent: vi.fn(),
-      handleDeleteEvent: vi.fn((ev, cb) => cb()),
+
+      handleDeleteEvent: vi.fn((ev, navfunc) => {
+        if (navfunc) navfunc(); // "pulsamos el botón" de la navegación
+        return of(true);
+      }),
+
       navigateToEdit: vi.fn()
     };
-
     mockRouter = { navigate: vi.fn() };
 
     await TestBed.configureTestingModule({
@@ -59,7 +73,6 @@ describe('EventDetail', () => {
     fixture = TestBed.createComponent(EventDetail);
     component = fixture.componentInstance;
 
-    // Estados de carga falsos para ver el contenido
     component.isLoading.set(false);
     component.error.set(null);
 
@@ -74,22 +87,26 @@ describe('EventDetail', () => {
   });
 
   it('should show edit and delete buttons only for event creator', async () => {
+    const id = '123';
+    const eventData = { _id: id, title: 'Test', hobby: 'Coding', lat: 0, lng: -3, participants: [] };
+
+    eventsListSignal.set([eventData]);
+
+    (component as any).eventId.set(id);
+
     mockEventsService.isUserCreator.mockReturnValue(true);
-    (component as any).eventId.set('123');
+
     fixture.detectChanges();
     await fixture.whenStable();
+    fixture.detectChanges();
 
-    const allButtons = Array.from(fixture.nativeElement.querySelectorAll('button')) as HTMLButtonElement[];
-    const editBtn = allButtons.find(btn => btn.textContent?.includes('Editar'));
+    const editBtn = fixture.nativeElement.querySelector('[data-testid="edit-btn"]');
 
-    if (!editBtn) {
-      console.log("Botones encontrados:", allButtons.map(b => b.textContent?.trim()));
-    }
+    expect(editBtn).not.toBeNull();
+    expect(editBtn.textContent).toContain('Editar');
+  });
 
-    expect(editBtn?.textContent).toContain('Editar');
-  })
-
-  it.only('should allow non-creator to join event', () => {
+  it('should allow non-creator to join event', () => {
     mockEventsService.isUserParticipant.mockReturnValue(false);
     fixture.detectChanges();
 
@@ -99,11 +116,28 @@ describe('EventDetail', () => {
     expect(mockEventsService.handleJoinEvent).toHaveBeenCalled();
   });
 
-  it('should delete event and navigate back when creator clicks delete', () => {
+  it('should delete event and navigate back when creator clicks delete', async () => {
+    const id = '123';
+    const fullMockEvent = {
+        _id: id,
+        title: 'Evento a borrar',
+        participants: [],
+        date: new Date().toISOString(),
+        creatorUser: 'Admin',
+        lat: 40,
+        lng: -3
+    };
+
+    eventsListSignal.set([fullMockEvent]);
+    (component as any).eventId.set(id);
     mockEventsService.isUserCreator.mockReturnValue(true);
+
     fixture.detectChanges();
+    await fixture.whenStable();
 
     component.deleteEvent();
+
+    await fixture.whenStable();
 
     expect(mockEventsService.handleDeleteEvent).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/events']);
