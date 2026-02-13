@@ -31,6 +31,7 @@
           @if (isCreator()) {
             <button
               class="bg-indigo-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-indigo-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+              data-testid="edit-btn"
               (click)="goToEdit()">
               Editar
             </button>
@@ -49,6 +50,7 @@
             } @else {
               <button
                 class="bg-emerald-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-emerald-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                data-testid="join-btn"
                 (click)="joinEvent()">
                 Unirme al evento
               </button>
