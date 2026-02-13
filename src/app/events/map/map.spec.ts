@@ -1,53 +1,121 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { MapComponent } from './map';
+import { EventsService } from '../../core/services/events.service';
+import { MapService } from '../../core/services/map.service';
+import { Router } from '@angular/router';
+import { NavigationService } from '../../core/services/navigation.service';
+import { signal } from '@angular/core';
+import { vi } from 'vitest';
 
-describe('Map', () => {
+describe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
+  let mockMapService: any;
+  let mockEventsService: any;
 
   beforeEach(async () => {
+    mockMapService = {
+      initMap: vi.fn().mockReturnValue({}), // Devuelve un objeto mapa vacío
+      destroyMap: vi.fn(),
+      onMapClick: vi.fn(),
+      createMarker: vi.fn().mockReturnValue({ openPopup: vi.fn(), setLatLng: vi.fn() }),
+      removeMarker: vi.fn(),
+      removeMarkers: vi.fn(),
+      createEventMarkers: vi.fn().mockReturnValue([]),
+      createSelectionIcon: vi.fn(),
+      createUserIcon: vi.fn(),
+      onMarkerDragEnd: vi.fn(),
+      setView: vi.fn(),
+      getUserLocation: vi.fn().mockResolvedValue({ lat: 40, lng: -3 })
+    };
+
+    mockEventsService = {
+      events: signal([]),
+      loadEvents: vi.fn()
+    };
+
     await TestBed.configureTestingModule({
-      imports: [MapComponent]
-    })
-    .compileComponents();
+      imports: [MapComponent],
+      providers: [
+        { provide: MapService, useValue: mockMapService },
+        { provide: EventsService, useValue: mockEventsService },
+        { provide: Router, useValue: { url: '/map', navigate: vi.fn() } },
+        { provide: NavigationService, useValue: { setPreviousUrl: vi.fn() } }
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+  });
+  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+  it('should create and initialize the map', async() => {
+    fixture.detectChanges();
+    await delay(0);
+    expect(mockMapService.initMap).toHaveBeenCalled();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should load events on init when mode is view', async() => {
+    component.mode = 'view';
+    fixture.detectChanges();
+    await delay(0);
+    expect(mockEventsService.loadEvents).toHaveBeenCalled();
   });
 
-  // ✅ Test 1: Inicialización del mapa
-  it('should initialize map with default or initial coordinates', async () => {
-    // Verifica que MapService.initMap() sea llamado
+  it('should setup selection mode and react to map clicks', async() => {
+    component.mode = 'select';
+    fixture.detectChanges();
+    await delay(0);
+
+    expect(mockMapService.onMapClick).toHaveBeenCalled();
   });
 
-  // ✅ Test 2: Modo visualización (view)
-  it('should display event markers in view mode', async () => {
-    // Verifica que se pinten marcadores de eventos
+  it('should emit locationSelected when a marker is placed', async() => {
+    const emitSpy = vi.spyOn(component.locationSelected, 'emit');
+    fixture.detectChanges();
+    await delay(0);
+
+    (component as any).placeSelectionMarker(40, -3);
+
+    expect(emitSpy).toHaveBeenCalledWith({ lat: 40, lng: -3 });
+    expect(component.selectedLocation()).toEqual({ lat: 40, lng: -3 });
   });
 
-  // ✅ Test 3: Modo selección (select)
-  it('should allow location selection in select mode', async () => {
-    // Simula click en el mapa y verifica que emita locationSelected
+  it('should repaint markers when events signal changes', async() => {
+    fixture.detectChanges();
+    await delay(0);
+
+    mockEventsService.events.set([{ _id: '1', lat: 10, lng: 10 }]);
+
+    fixture.detectChanges();
+
+    expect(mockMapService.createEventMarkers).toHaveBeenCalled();
   });
 
-  // ✅ Test 4: Geolocalización del usuario
-  it('should get and display user location when requested', async () => {
-    // Mockea navigator.geolocation y verifica marcador de usuario
+  it('should call getUserLocation and set view when getLocation is called', async () => {
+    (component as any).map = { dummy: true };
+
+    fixture.detectChanges();
+
+    await component.getLocation();
+
+    expect(mockMapService.getUserLocation).toHaveBeenCalled();
+    expect(mockMapService.setView).toHaveBeenCalled();
   });
 
-  // ✅ Test 5: Marcador arrastrable
-  it('should update selected location when dragging marker in select mode', async () => {
-    // Verifica que al arrastrar se actualicen las coordenadas
+  it('should destroy map instance on destroy', () => {
+    (component as any).map = {};
+    component.ngOnDestroy();
+    expect(mockMapService.destroyMap).toHaveBeenCalledWith(component.containerId);
   });
 
-  // ✅ Test 6: Cleanup al destruir componente
-  it('should destroy map on component destroy', () => {
-    // Verifica que MapService.destroyMap() sea llamado en ngOnDestroy
+  it('should expose navigateToEvent to window and use router', () => {
+    fixture.detectChanges();
+    const router = TestBed.inject(Router);
+
+    expect((window as any).navigateToEvent).toBeDefined();
+    (window as any).navigateToEvent('123');
+
+    expect(router.navigate).toHaveBeenCalledWith(['/events', '123']);
   });
 });
