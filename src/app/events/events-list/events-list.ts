@@ -25,7 +25,7 @@ export class EventsList implements OnInit{
   error = this.eventsService.error;
 
   readonly Array = Array;
-  // Señales para filtros
+
   searchText = signal<string>('');
   selectedHobby = signal<string>('');
   sortBy = signal<'date' | null>(null);
@@ -34,7 +34,7 @@ export class EventsList implements OnInit{
   readonly Hobby = Hobby;
   hobbyList = ['', ...Object.values(Hobby)];
 
-  // Eventos filtrados y ordenados
+
   filteredEvents = computed(() => {
     let events = this.events();
     const search = this.searchText().toLowerCase().trim();
@@ -71,7 +71,7 @@ export class EventsList implements OnInit{
 
   ngOnInit(): void {
     this.eventsService.loadEvents();
-    // Cargar filtros desde URL
+
     this.route.queryParams.subscribe(params => {
       this.loadFiltersFromUrl(params);
     });
@@ -102,7 +102,7 @@ export class EventsList implements OnInit{
     this.eventsService.handleLeaveEvent(event || null);
   }
 
-  // FILTERS
+
   loadFiltersFromUrl(params: any): void {
     if (params['search']) {
       this.searchText.set(params['search']);
@@ -168,7 +168,7 @@ export class EventsList implements OnInit{
     this.updateURL();
   }
 
-  // Helpers para el template
+
   isActiveSort(type: 'date'): boolean {
     return this.sortBy() === type;
   }
@@ -180,7 +180,7 @@ export class EventsList implements OnInit{
     return this.sortAscending() ? '↑' : '↓';
   }
 
-  // Limpiar todos los filtros
+
   clearFilters(): void {
     this.searchText.set('');
     this.selectedHobby.set('');
@@ -192,7 +192,7 @@ export class EventsList implements OnInit{
     });
   }
 
-  // HELPERS
+  
   isEventCreator(event: EventModel): boolean {
     return this.eventsService.isUserCreator(event);
   }

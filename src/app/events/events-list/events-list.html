@@ -3,10 +3,10 @@
   <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
 
     <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-lg shadow-sm md:max-w-4xl">
-  <!-- Búsqueda por texto -->
+
   <input type="text" id="search" [value]="searchText()" (input)="onSearchChange($event)" placeholder="🔍 Buscar por título..." class="flex-1 min-w-50 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
 
-  <!-- Filtro por hobby -->
+
   <select id="hobby" [value]="selectedHobby()" (change)="onHobbyChange($event)" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
     <option value="">Todas las categorías</option>
     @for (hobby of hobbyList; track hobby) {
@@ -16,17 +16,17 @@
     }
   </select>
 
-  <!-- Ordenar por fecha -->
+
   <button type="button" [class.bg-indigo-600]="isActiveSort('date')" [class.text-white]="isActiveSort('date')" [class.bg-gray-200]="!isActiveSort('date')" [class.text-gray-700]="!isActiveSort('date')" (click)="toggleSort('date')" class="px-3 py-2 text-sm rounded-lg font-medium transition-all duration-300 hover:shadow-md whitespace-nowrap">
     Fecha {{ getSortIcon('date') }}
   </button>
 
-  <!-- Botón limpiar -->
+
   <button type="button" (click)="clearFilters()" class="px-3 py-2 text-sm bg-red-100 text-red-600 rounded-lg font-medium hover:bg-red-200 transition-all duration-300" title="Limpiar filtros">
     <i class="fa fa-trash-o" style="font-size:20px"></i>
   </button>
 
-  <!-- Contador de resultados -->
+
   <span class="text-xs text-gray-600 ml-auto text-right whitespace-nowrap">
     {{ filteredEvents().length }} / {{ events().length }} eventos
   </span>
@@ -82,14 +82,14 @@
       </button>
     </div>
   }
-  <!-- Events Grid -->
+
   @else {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       @for (event of filteredEvents(); track event._id) {
         <div class="bg-white rounded-3xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col cursor-pointer"
             (click)="goToEventDetail(event._id)">
 
-          <!-- Card Header -->
+
           <div class="  text-stone-900 p-6 ">
             <div class="flex justify-between items-start gap-4">
               <h3
@@ -106,7 +106,7 @@
             </div>
           </div>
 
-          <!-- Card Body -->
+
           <div class="p-6 pt-2 flex-1">
             <p class="text-gray-600 leading-relaxed mb-6 line-clamp-3 text-sm">
               {{ event.description }}
@@ -133,7 +133,7 @@
             </div>
           </div>
 
-          <!-- Card Footer -->
+         
           <div class="p-4 pt-0   flex flex-wrap gap-2">
             <button
               type="button"

@@ -45,21 +45,60 @@ export class BarChartComponent implements AfterViewInit {
         labels: months,
         datasets: [
           {
-            backgroundColor: [
-              '#3498db'
-            ],
-
+            backgroundColor: '#6366f1',
+            hoverBackgroundColor: '#4f46e5',
+            borderRadius: 6,
             data: counts,
+            label: 'Núm. eventos'
           }
         ]
       },
       options: {
         responsive: true,
+        maintainAspectRatio:false,
         plugins: {
-          title: {
-            display: true,
-            text: 'Events per Month'
-          }
+      legend: {
+      display: true,
+      position: 'bottom',
+      labels: {
+        usePointStyle: true,
+        font: { family: 'sans-serif', size: 12 },
+        padding: 20
+      }
+    },
+    tooltip: {
+      backgroundColor: '#1e293b',
+      padding: 12,
+      titleFont: { family: 'sans-serif', size: 14 },
+      bodyFont: { family: 'sans-serif', size: 13 },
+      cornerRadius: 8,
+      displayColors: false
+    }
+  },
+  scales: {
+    x: {
+      grid: {
+        display: false,
+
+      },
+      ticks: {
+        font: { family: 'sans-serif' },
+        color: '#64748b'
+      }
+    },
+    y: {
+      beginAtZero: true,
+      grid: {
+        color: '#f1f5f9',
+
+      },
+      ticks: {
+        font: { family: 'sans-serif' },
+        color: '#64748b',
+        maxTicksLimit: 5
+      },
+      border: { display: false }
+    }
         }
       }
     })

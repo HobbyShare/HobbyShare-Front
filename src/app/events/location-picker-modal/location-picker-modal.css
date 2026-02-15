@@ -137,7 +137,7 @@
   transform: scale(0.98);
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .modal-content {
     max-width: 100%;

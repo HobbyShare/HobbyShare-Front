@@ -6,7 +6,7 @@ import { form, required, FormField } from '@angular/forms/signals';
 import { Hobby } from '../../core/enums/hobby.enum';
 import { LocationPickerModal } from '../location-picker-modal/location-picker-modal';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser'; // <--- Importación clave
+import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationService } from '../../core/services/navigation.service';
 
 @Component({
@@ -22,14 +22,14 @@ export class EventForm implements OnInit {
   private eventsService = inject(EventsService);
   private navigationService = inject(NavigationService);
   private route = inject(ActivatedRoute);
-  router = inject(Router); // público para usarlo en el template
+  router = inject(Router);
 
   buttonSubmitClicked = signal<boolean>(false);
   eventId = signal<string | null>(null);
   isEditMode = computed(() => !!this.eventId());
   isLoadingEvent = signal(false);
 
-  // Modal de selección de ubicación
+
   isLocationModalOpen = signal(false);
   selectedLocation = signal<{ lat: number; lng: number } | null>(null);
 
@@ -44,7 +44,7 @@ export class EventForm implements OnInit {
     lng: 0,
   });
 
-  // Nota: Cambiado de createEventForm() a createEventForm para que funcione con [formField]
+
   createEventForm = form(this.eventFormModel, (path) => {
     required(path.title, { message: 'El título es obligatorio' });
     required(path.description, { message: 'La descripción es obligatoria' });
@@ -76,7 +76,7 @@ export class EventForm implements OnInit {
           lng: event.lng,
         });
 
-        // Actualizar la ubicación seleccionada para el preview
+
         this.selectedLocation.set({
           lat: event.lat,
           lng: event.lng,
@@ -100,7 +100,7 @@ export class EventForm implements OnInit {
       return;
     }
 
-    // Validar que se haya seleccionado una ubicación
+
     const location = this.selectedLocation();
     if (!location || location.lat === 0 || location.lng === 0) {
       alert('Por favor, selecciona una ubicación en el mapa');
@@ -132,9 +132,6 @@ export class EventForm implements OnInit {
     });
   }
 
-  // ============================================
-  // GESTIÓN DEL MODAL DE UBICACIÓN
-  // ============================================
 
   openLocationPicker(): void {
     this.isLocationModalOpen.set(true);
@@ -143,7 +140,7 @@ export class EventForm implements OnInit {
   onLocationConfirmed(coords: { lat: number; lng: number }): void {
     this.selectedLocation.set(coords);
 
-    // Actualizar el formulario con las nuevas coordenadas
+
     this.eventFormModel.update(model => ({
       ...model,
       lat: coords.lat,
@@ -166,9 +163,7 @@ export class EventForm implements OnInit {
     }));
   }
 
-  // ============================================
-  // HELPERS PARA EL TEMPLATE
-  // ============================================
+
 
   get hasLocation(): boolean {
     const location = this.selectedLocation();
@@ -196,7 +191,7 @@ export class EventForm implements OnInit {
     if (previousUrl) {
       this.router.navigateByUrl(previousUrl);
     } else {
-      // Fallback: si no hay historial guardado, lo mandamos al listado general
+      
       this.router.navigate(['/events']);
     }
   }

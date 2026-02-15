@@ -1,20 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PieChartComponent } from './pie-chart';
+import { EventsService } from '../../core/services/events.service';
 
-import { PieChart } from './pie-chart';
-
-describe('PieChart', () => {
-  let component: PieChart;
-  let fixture: ComponentFixture<PieChart>;
+describe('PieChartComponent', () => {
+  let component: PieChartComponent;
+  let fixture: ComponentFixture<PieChartComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [PieChart]
-    })
-    .compileComponents();
+    const mockEventsService = {
+      loadEvents: () => {},
+      getEventsByHobby: () => ({
+        'Fútbol': 10
+      })
+    };
 
-    fixture = TestBed.createComponent(PieChart);
+    await TestBed.configureTestingModule({
+      imports: [PieChartComponent],
+      providers: [
+        { provide: EventsService, useValue: mockEventsService }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(PieChartComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {

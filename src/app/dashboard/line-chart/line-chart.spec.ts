@@ -1,20 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LineChartComponent } from './line-chart';
+import { UsersService } from '../../core/services/users.service';
 
-import { LineChart } from './line-chart';
-
-describe('LineChart', () => {
-  let component: LineChart;
-  let fixture: ComponentFixture<LineChart>;
+describe('LineChartComponent', () => {
+  let component: LineChartComponent;
+  let fixture: ComponentFixture<LineChartComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LineChart]
-    })
-    .compileComponents();
+    const mockUsersService = {
+      loadUsers: () => {},
+      getNewUsersByMonth: () => ({
+        'Enero': 15
+      })
+    };
 
-    fixture = TestBed.createComponent(LineChart);
+    await TestBed.configureTestingModule({
+      imports: [LineChartComponent],
+      providers: [
+        { provide: UsersService, useValue: mockUsersService }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(LineChartComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {

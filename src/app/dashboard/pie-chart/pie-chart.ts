@@ -37,6 +37,7 @@ export class PieChartComponent implements AfterViewInit {
 
 
     const ctx = this.pieCanvas.nativeElement.getContext('2d')
+    
 
     this.pieChart = new Chart(ctx, {
       type: 'pie',
@@ -45,23 +46,51 @@ export class PieChartComponent implements AfterViewInit {
         datasets: [
           {
             backgroundColor: [
-              '#3498db', '#e74c3c', '#2ecc71',
-              '#f39c12', '#9b59b6', '#1abc9c',
-              '#e67e22', '#34495e'
+              '#2b34d9', '#1a65f0', '#75a0f0', '#a1bced',
+              '#cbd9f2', '#ebcee5', '#f0c5eb', '#f08be6',
+              '#f25cf5', '#f02edc'
             ],
 
             data: counts,
           }
         ]
       },
+
+      plugins: [
+    {
+      id: 'legendMargin',
+      beforeInit: function(chart) {
+        const originalFit = chart.legend!.fit;
+
+        chart.legend!.fit = function fit() {
+
+          originalFit.bind(chart.legend)();
+
+          this.height += 60;
+        }
+      }
+    }
+  ],
       options: {
         responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Events per Hobby'
+        layout: {
+          padding: {
+            top: 20,
+
           }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: {
+              usePointStyle: true,
+              font: { family: 'sans-serif', size: 12 },
+              padding: 20,
+            },
+    },
         }
+
       }
     })
   }

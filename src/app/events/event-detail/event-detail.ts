@@ -51,13 +51,13 @@ export class EventDetail implements OnInit {
   }
 
   private loadEvent(id: string): void {
-    // Si el evento no está en el servicio, lo descargamos
+
     const existingEvent = this.eventsService.events().find(e => e._id === id);
     if (!existingEvent) {
       this.isLoading.set(true);
       this.eventsService.getEventById(id).subscribe({
         next: (event) => {
-          // Esto hará que el 'computed' de arriba se active.
+
           this.eventsService['_events'].update(events => [...events, event]);
           this.isLoading.set(false);
         },
@@ -77,7 +77,7 @@ export class EventDetail implements OnInit {
     if (previousUrl) {
       this.router.navigateByUrl(previousUrl);
     } else {
-      this.router.navigate(['/events']); // Fallback por si entran directos por URL
+      this.router.navigate(['/events']);
     }
   }
 
@@ -106,7 +106,7 @@ export class EventDetail implements OnInit {
     this.eventsService.handleLeaveEvent(event);
   }
 
-  // HELPERS PARA EL TEMPLATE
+ 
   getMapUrl(): SafeResourceUrl {
     const event = this.event();
     if (!event) return '';

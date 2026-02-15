@@ -1,20 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { BarChartComponent } from './bar-chart';
+import { EventsService } from '../../core/services/events.service';
 
-import { BarChart } from './bar-chart';
-
-describe('BarChart', () => {
-  let component: BarChart;
-  let fixture: ComponentFixture<BarChart>;
+describe('BarChartComponent', () => {
+  let component: BarChartComponent;
+  let fixture: ComponentFixture<BarChartComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [BarChart]
-    })
-    .compileComponents();
+    const mockEventsService = {
+      loadEvents: () => {},
+      getEventsByMonth: () => ({
+        'Enero': 5,
+        'Febrero': 8
+      })
+    };
 
-    fixture = TestBed.createComponent(BarChart);
+    await TestBed.configureTestingModule({
+      imports: [BarChartComponent],
+      providers: [
+        { provide: EventsService, useValue: mockEventsService }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(BarChartComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {

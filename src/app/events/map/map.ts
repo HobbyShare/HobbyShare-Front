@@ -36,7 +36,7 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedLocation = signal<{ lat: number; lng: number } | null>(null);
 
   constructor() {
-    // Effect: actualiza marcadores de eventos cuando cambian
+
     effect(() => {
       const currentEvents = this.events();
 
@@ -47,7 +47,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Dar tiempo al DOM para renderizar el contenedor
+
     setTimeout(() => {
       this.initMap();
 
@@ -60,7 +60,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     }, 0);
     (window as any).navigateToEvent = (eventId: string) => {
-      this.navigationService.setPreviousUrl(this.router.url); // Guarda si vienes de /events o /map
+      this.navigationService.setPreviousUrl(this.router.url);
       this.router.navigate(['/events', eventId]);
     };
   }
@@ -83,7 +83,7 @@ export class MapComponent implements OnInit, OnDestroy {
       zoom: this.zoom,
     });
 
-    // Si hay coordenadas iniciales, mostrar marcador
+
     if (this.initialCoords && this.mode === 'select') {
       this.placeSelectionMarker(this.initialCoords.lat, this.initialCoords.lng);
     }
@@ -92,7 +92,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private setupSelectionMode(): void {
     if (!this.map) return;
 
-    // Permitir click en el mapa para colocar marcador
+
     this.mapService.onMapClick(this.map, (lat, lng) => {
       this.placeSelectionMarker(lat, lng);
     });
@@ -113,7 +113,7 @@ export class MapComponent implements OnInit, OnDestroy {
       popup: 'Ubicación seleccionada',
     });
 
-    // Listener para cuando arrastren el marcador
+    
     this.mapService.onMarkerDragEnd(this.selectionMarker, (newLat, newLng) => {
       this.updateSelectedLocation(newLat, newLng);
     });
