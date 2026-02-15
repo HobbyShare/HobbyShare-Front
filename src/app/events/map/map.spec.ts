@@ -15,7 +15,7 @@ describe('MapComponent', () => {
 
   beforeEach(async () => {
     mockMapService = {
-      initMap: vi.fn().mockReturnValue({}), // Devuelve un objeto mapa vacío
+      initMap: vi.fn().mockReturnValue({}), 
       destroyMap: vi.fn(),
       onMapClick: vi.fn(),
       createMarker: vi.fn().mockReturnValue({ openPopup: vi.fn(), setLatLng: vi.fn() }),

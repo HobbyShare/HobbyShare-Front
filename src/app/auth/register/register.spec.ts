@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -12,7 +11,7 @@ describe('RegisterComponent', () => {
 
   beforeEach(async () => {
     const authServiceMock = {
-      register: vi.fn()
+      register: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -20,26 +19,20 @@ describe('RegisterComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         provideHttpClient(),
-        provideRouter([])
-      ]
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
-  // ✅ Test 1: Componente se crea
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  // ✅ Test 2: Formulario inválido inicialmente
   it('should have invalid form initially', () => {
     expect(component.registerForm.invalid).toBeTruthy();
   });
-
-  // ✅ Test 3: Email debe ser válido
   it('should validate email format', () => {
     const emailControl = component.registerForm.get('email');
 
@@ -49,8 +42,6 @@ describe('RegisterComponent', () => {
     emailControl?.setValue('valid@email.com');
     expect(emailControl?.hasError('email')).toBeFalsy();
   });
-
-  // ✅ Test 4: Password mínimo 6 caracteres
   it('should require password with minimum 6 characters', () => {
     const passwordControl = component.registerForm.get('password');
 

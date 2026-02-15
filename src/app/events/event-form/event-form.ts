@@ -18,19 +18,18 @@ import { MapComponent } from '../map/map';
   styleUrl: './event-form.css',
 })
 export class EventForm implements OnInit {
-  constructor(private sanitizer: DomSanitizer) {};
+  constructor(private sanitizer: DomSanitizer) {}
 
   private eventsService = inject(EventsService);
   private navigationService = inject(NavigationService);
   private route = inject(ActivatedRoute);
-  router = inject(Router); // público para usarlo en el template
+  router = inject(Router);
 
   buttonSubmitClicked = signal<boolean>(false);
   eventId = signal<string | null>(null);
   isEditMode = computed(() => !!this.eventId());
   isLoadingEvent = signal(false);
 
-  // Modal de selección de ubicación
   isLocationModalOpen = signal(false);
   selectedLocation = signal<{ lat: number; lng: number } | null>(null);
 
@@ -66,19 +65,16 @@ export class EventForm implements OnInit {
     const id = this.eventId()!;
     this.eventsService.getEventById(id).subscribe({
       next: (event) => {
-        const formattedDate = event.date
-                ? new Date(event.date).toISOString().slice(0, 16)
-                : '';
+        const formattedDate = event.date ? new Date(event.date).toISOString().slice(0, 16) : '';
         this.eventFormModel.set({
           title: event.title,
           description: event.description,
           hobby: Array.isArray(event.hobby) ? event.hobby[0] : event.hobby,
-          date: (formattedDate.split('T')[0]) as any,
+          date: formattedDate.split('T')[0] as any,
           lat: event.lat,
           lng: event.lng,
         });
 
-        // Actualizar la ubicación seleccionada para el preview
         this.selectedLocation.set({
           lat: event.lat,
           lng: event.lng,
@@ -90,7 +86,7 @@ export class EventForm implements OnInit {
         console.error('Error loading event:', err);
         this.isLoadingEvent.set(false);
         this.router.navigate(['/events']);
-      }
+      },
     });
   }
 
@@ -102,7 +98,6 @@ export class EventForm implements OnInit {
       return;
     }
 
-    // Validar que se haya seleccionado una ubicación
     const location = this.selectedLocation();
     if (!location || location.lat === 0 || location.lng === 0) {
       alert('Por favor, selecciona una ubicación en el mapa');
@@ -129,8 +124,7 @@ export class EventForm implements OnInit {
       },
       error: (err) => {
         console.error('❌ Error:', err);
-
-      }
+      },
     });
   }
 
@@ -141,8 +135,7 @@ export class EventForm implements OnInit {
   onLocationConfirmed(coords: { lat: number; lng: number }): void {
     this.selectedLocation.set(coords);
 
-    // Actualizar el formulario con las nuevas coordenadas
-    this.eventFormModel.update(model => ({
+    this.eventFormModel.update((model) => ({
       ...model,
       lat: coords.lat,
       lng: coords.lng,
@@ -157,7 +150,7 @@ export class EventForm implements OnInit {
 
   removeLocation(): void {
     this.selectedLocation.set(null);
-    this.eventFormModel.update(model => ({
+    this.eventFormModel.update((model) => ({
       ...model,
       lat: 0,
       lng: 0,
@@ -190,9 +183,7 @@ export class EventForm implements OnInit {
     if (previousUrl) {
       this.router.navigateByUrl(previousUrl);
     } else {
-      // Fallback: si no hay historial guardado, lo mandamos al listado general
       this.router.navigate(['/events']);
     }
   }
 }
-

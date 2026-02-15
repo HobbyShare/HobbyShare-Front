@@ -1,41 +1,53 @@
-/* calendar.component.css */
 
-/* Container principal */
 :host ::ng-deep .fc {
   font-family: inherit;
   background: transparent;
+  font-size: 0.875rem;
 }
 
-/* Toolbar del calendario */
+
 :host ::ng-deep .fc-header-toolbar {
-  padding: 1.5rem;
+  padding: 1rem;
   margin-bottom: 0 !important;
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
+  flex-direction: column !important;
+  gap: 0.75rem;
+}
+
+:host ::ng-deep .fc-toolbar-chunk {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 :host ::ng-deep .fc-toolbar-title {
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 300;
   color: #4338ca;
   letter-spacing: 0.025em;
+  text-align: center;
+  width: 100%;
 }
 
-/* Botones del toolbar */
+
 :host ::ng-deep .fc-button {
   background: white !important;
   color: #6b7280 !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 0.5rem !important;
-  padding: 0.5rem 1rem !important;
+  padding: 0.5rem 0.75rem !important;
   font-weight: 500 !important;
-  font-size: 0.875rem !important;
+  font-size: 0.75rem !important;
   text-transform: none !important;
   box-shadow: none !important;
   transition: all 0.2s !important;
+  touch-action: manipulation;
 }
 
-:host ::ng-deep .fc-button:hover {
+:host ::ng-deep .fc-button:hover,
+:host ::ng-deep .fc-button:active {
   background: #f9fafb !important;
   color: #4338ca !important;
   border-color: #d1d5db !important;
@@ -51,24 +63,25 @@
   border-color: #4338ca !important;
 }
 
-/* Días de la semana */
+
 :host ::ng-deep .fc-col-header-cell {
   background: #f9fafb;
   border-color: #e5e7eb !important;
-  padding: 0.75rem 0.5rem;
+  padding: 0.5rem 0.25rem;
 }
 
 :host ::ng-deep .fc-col-header-cell-cushion {
   color: #6b7280;
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Celdas del calendario */
+
 :host ::ng-deep .fc-daygrid-day {
   border-color: #e5e7eb !important;
+  min-height: 60px;
 }
 
 :host ::ng-deep .fc-daygrid-day:hover {
@@ -78,11 +91,11 @@
 :host ::ng-deep .fc-daygrid-day-number {
   color: #1f2937;
   font-weight: 400;
-  padding: 0.5rem;
-  font-size: 0.875rem;
+  padding: 0.25rem;
+  font-size: 0.75rem;
 }
 
-/* Día actual */
+
 :host ::ng-deep .fc-day-today {
   background: #eef2ff !important;
 }
@@ -92,43 +105,46 @@
   font-weight: 600;
 }
 
-/* Eventos en el calendario */
+
 :host ::ng-deep .fc-event {
   background: #4338ca !important;
   color: white;
   border: none !important;
   border-radius: 0.375rem !important;
-  padding: 0.25rem 0.5rem !important;
+  padding: 0.125rem 0.375rem !important;
   margin: 0.125rem !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  touch-action: manipulation;
 }
 
-:host ::ng-deep .fc-event:hover {
+:host ::ng-deep .fc-event:hover,
+:host ::ng-deep .fc-event:active {
   background: #3730a3 !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  transform: scale(1.02);
 }
 
 :host ::ng-deep .fc-event-title {
   font-weight: 500 !important;
-  font-size: 0.75rem !important;
+  font-size: 0.65rem !important;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 :host ::ng-deep .fc-event-time {
-  font-size: 0.7rem !important;
+  font-size: 0.6rem !important;
   opacity: 0.9;
 }
 
-/* Días fuera del mes actual */
+
 :host ::ng-deep .fc-day-other .fc-daygrid-day-number {
   color: #d1d5db;
 }
 
-/* Vista de semana/día */
+
 :host ::ng-deep .fc-timegrid-slot {
   border-color: #e5e7eb !important;
 }
@@ -138,15 +154,15 @@
   font-size: 0.75rem;
 }
 
-/* Scrollbar personalizado */
+
 :host ::ng-deep .fc-scroller {
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f9fafb;
 }
 
 :host ::ng-deep .fc-scroller::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 :host ::ng-deep .fc-scroller::-webkit-scrollbar-track {
@@ -162,12 +178,41 @@
   background: #9ca3af;
 }
 
-/* Modal backdrop */
-.modal-backdrop {
-  background: rgba(0, 0, 0, 0.3);
+
+:host ::ng-deep .fc-list-event {
+  cursor: pointer !important;
+  touch-action: manipulation;
 }
 
-/* Animación del modal */
+:host ::ng-deep .fc-list-event:hover {
+  background-color: rgba(67, 56, 202, 0.05) !important;
+}
+
+:host ::ng-deep .fc-list-event-dot {
+  border-color: #4338ca !important;
+}
+
+:host ::ng-deep .fc-list-event-title {
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+:host ::ng-deep .fc-list-event-time {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
 dialog[open] {
   animation: fadeIn 0.2s ease-out;
 }
@@ -180,5 +225,143 @@ dialog[open] {
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+dialog[open]#event_modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+
+@media (min-width: 640px) {
+  :host ::ng-deep .fc {
+    font-size: 1rem;
+  }
+
+  :host ::ng-deep .fc-header-toolbar {
+    padding: 1.25rem;
+  }
+
+  :host ::ng-deep .fc-toolbar-title {
+    font-size: 1.25rem;
+  }
+
+  :host ::ng-deep .fc-button {
+    padding: 0.5rem 0.875rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  :host ::ng-deep .fc-col-header-cell {
+    padding: 0.625rem 0.375rem;
+  }
+
+  :host ::ng-deep .fc-col-header-cell-cushion {
+    font-size: 0.75rem;
+  }
+
+  :host ::ng-deep .fc-daygrid-day {
+    min-height: 80px;
+  }
+
+  :host ::ng-deep .fc-daygrid-day-number {
+    padding: 0.375rem;
+    font-size: 0.875rem;
+  }
+
+  :host ::ng-deep .fc-event {
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  :host ::ng-deep .fc-event-title {
+    font-size: 0.75rem !important;
+  }
+
+  :host ::ng-deep .fc-event-time {
+    font-size: 0.7rem !important;
+  }
+
+  :host ::ng-deep .fc-scroller::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+
+@media (min-width: 768px) {
+  :host ::ng-deep .fc-header-toolbar {
+    padding: 1.5rem;
+    flex-direction: row !important;
+    justify-content: space-between;
+  }
+
+  :host ::ng-deep .fc-toolbar-title {
+    font-size: 1.5rem;
+    width: auto;
+    text-align: left;
+  }
+
+  :host ::ng-deep .fc-toolbar-chunk {
+    justify-content: flex-start;
+  }
+
+  :host ::ng-deep .fc-button {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+
+  :host ::ng-deep .fc-col-header-cell {
+    padding: 0.75rem 0.5rem;
+  }
+
+  :host ::ng-deep .fc-daygrid-day {
+    min-height: 100px;
+  }
+
+  :host ::ng-deep .fc-daygrid-day-number {
+    padding: 0.5rem;
+  }
+}
+
+
+@media (min-width: 1024px) {
+  :host ::ng-deep .fc-daygrid-day {
+    min-height: 120px;
+  }
+
+  :host ::ng-deep .fc-event {
+    padding: 0.375rem 0.625rem !important;
+  }
+
+  :host ::ng-deep .fc-event-title {
+    font-size: 0.875rem !important;
+  }
+}
+
+
+@media (hover: none) and (pointer: coarse) {
+
+  :host ::ng-deep .fc-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  :host ::ng-deep .fc-event {
+    min-height: 28px;
+  }
+
+
+  :host ::ng-deep .fc-daygrid-day:hover {
+    background: transparent;
+  }
+}
+
+
+@media (max-height: 600px) {
+  :host ::ng-deep .fc-daygrid-day {
+    min-height: 50px !important;
   }
 }

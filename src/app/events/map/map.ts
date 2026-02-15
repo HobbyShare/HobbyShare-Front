@@ -1,4 +1,14 @@
-import { Component, OnInit, OnDestroy, effect, inject, Input, Output, EventEmitter, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  effect,
+  inject,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+} from '@angular/core';
 import * as L from 'leaflet';
 import { EventsService } from '../../core/services/events.service';
 import { MapService } from '../../core/services/map.service';
@@ -16,13 +26,11 @@ export class MapComponent implements OnInit, OnDestroy {
   private mapService = inject(MapService);
   private router = inject(Router);
   private navigationService = inject(NavigationService);
-
-  // Configuración del componente
   @Input() mode: 'view' | 'select' = 'view';
   @Input() initialCoords?: { lat: number; lng: number };
   @Input() showEventMarkers: boolean = true;
   @Input() containerId: string = 'map';
-  @Input() centerCoords: [number, number] = [41.40237282641176, 2.194541858893481]; // Barcelona por defecto
+  @Input() centerCoords: [number, number] = [41.40237282641176, 2.194541858893481]; 
   @Input() zoom: number = 13;
 
   @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
@@ -36,7 +44,6 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedLocation = signal<{ lat: number; lng: number } | null>(null);
 
   constructor() {
-    // Effect: actualiza marcadores de eventos cuando cambian
     effect(() => {
       const currentEvents = this.events();
 
@@ -45,30 +52,23 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     });
     effect(() => {
-    const coords = this.initialCoords; // Angular detectará el cambio si pasas un nuevo objeto
-    if (this.map && coords && this.mode === 'view') {
-
-      // 1. Mover la vista del mapa a la nueva posición
-      this.map.setView([coords.lat, coords.lng], this.zoom);
-
-      // 2. Limpiar marcadores previos (opcional, para no duplicar)
-      if (this.selectionMarker) {
-        this.mapService.removeMarker(this.selectionMarker);
+      const coords = this.initialCoords;
+      if (this.map && coords && this.mode === 'view') {
+        this.map.setView([coords.lat, coords.lng], this.zoom);
+        if (this.selectionMarker) {
+          this.mapService.removeMarker(this.selectionMarker);
+        }
+        this.selectionMarker = this.mapService.createMarker(this.map, {
+          lat: coords.lat,
+          lng: coords.lng,
+          icon: this.mapService.createSelectionIcon(),
+          popup: 'Nueva ubicación seleccionada',
+        });
       }
-
-      // 3. Crear el nuevo marcador en la posición actualizada
-      this.selectionMarker = this.mapService.createMarker(this.map, {
-        lat: coords.lat,
-        lng: coords.lng,
-        icon: this.mapService.createSelectionIcon(),
-        popup: 'Nueva ubicación seleccionada',
-      });
-    }
-  });
+    });
   }
 
   ngOnInit(): void {
-    // Dar tiempo al DOM para renderizar el contenedor
     setTimeout(() => {
       this.initMap();
 
@@ -81,7 +81,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     }, 0);
     (window as any).navigateToEvent = (eventId: string) => {
-      this.navigationService.setPreviousUrl(this.router.url); // Guarda si vienes de /events o /map
+      this.navigationService.setPreviousUrl(this.router.url);
       this.router.navigate(['/events', eventId]);
     };
   }
@@ -95,7 +95,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private initMap(): void {
     const center = this.initialCoords
-      ? [this.initialCoords.lat, this.initialCoords.lng] as [number, number]
+      ? ([this.initialCoords.lat, this.initialCoords.lng] as [number, number])
       : this.centerCoords;
 
     this.map = this.mapService.initMap({
@@ -104,17 +104,16 @@ export class MapComponent implements OnInit, OnDestroy {
       zoom: this.zoom,
     });
 
-    // Si hay coordenadas iniciales, mostrar marcador
     if (this.initialCoords && this.mode === 'select') {
       this.placeSelectionMarker(this.initialCoords.lat, this.initialCoords.lng);
     }
     if (this.mode === 'view' && this.initialCoords) {
-this.map.setView(center, this.zoom);
+      this.map.setView(center, this.zoom);
       this.mapService.createMarker(this.map!, {
         lat: this.initialCoords.lat,
         lng: this.initialCoords.lng,
-        icon: this.mapService.createSelectionIcon(), // El mismo icono del modal
-        popup: 'Ubicación del evento'
+        icon: this.mapService.createSelectionIcon(),
+        popup: 'Ubicación del evento',
       });
     }
   }
@@ -122,7 +121,6 @@ this.map.setView(center, this.zoom);
   private setupSelectionMode(): void {
     if (!this.map) return;
 
-    // Permitir click en el mapa para colocar marcador
     this.mapService.onMapClick(this.map, (lat, lng) => {
       this.placeSelectionMarker(lat, lng);
     });
@@ -131,7 +129,7 @@ this.map.setView(center, this.zoom);
   private placeSelectionMarker(lat: number, lng: number): void {
     if (!this.map) return;
 
-   if (this.selectionMarker) {
+    if (this.selectionMarker) {
       this.mapService.removeMarker(this.selectionMarker);
     }
 
@@ -143,7 +141,6 @@ this.map.setView(center, this.zoom);
       popup: 'Ubicación seleccionada',
     });
 
-    // Listener para cuando arrastren el marcador
     this.mapService.onMarkerDragEnd(this.selectionMarker, (newLat, newLng) => {
       this.updateSelectedLocation(newLat, newLng);
     });

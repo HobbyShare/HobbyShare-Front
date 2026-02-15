@@ -57,12 +57,12 @@ export class RegisterComponent {
     this.successMessage.set('')
 
     if(this.registerForm.invalid) {
-      this.errorMessage.set('Please, fulfill all the fields')
+      this.errorMessage.set('Por favor, rellena todos los campos')
       return
     }
 
     if(this.selectedHobbies().length === 0) {
-      this.errorMessage.set('Please, choose at least one hobby')
+      this.errorMessage.set('Por favor, seleccionado al menos un hobby')
       return
     }
 
@@ -70,7 +70,7 @@ export class RegisterComponent {
     const confirmPassword = this.registerForm.value.confirmPassword
 
     if(password !== confirmPassword) {
-      this.errorMessage.set('Passwords do not match')
+      this.errorMessage.set('Las constraseñas no coindicen')
     }
 
     const userDate = {
@@ -86,7 +86,7 @@ export class RegisterComponent {
     this.authService.register(userDate).subscribe({
       next: (response) => {
         this.isLoading.set(false);
-        this.successMessage.set('Successfully registered');
+        this.successMessage.set('Registro exitoso');
 
         setTimeout(() => {
           this.router.navigate(['/login'])
@@ -95,16 +95,11 @@ export class RegisterComponent {
 
       error: (error) => {
         this.isLoading.set(false)
-        this.errorMessage.set(error.error?.message || 'Error registering user')
+        this.errorMessage.set(error.error?.message || 'Error al registrarse')
       }
 
     })
 
-
-
-
-
   }
-
 
 }

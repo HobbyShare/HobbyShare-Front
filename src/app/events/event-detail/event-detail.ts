@@ -26,7 +26,7 @@ export class EventDetail implements OnInit {
     const id = this.eventId();
     if (!id) return null;
 
-    return this.eventsService.events().find(e => e._id === id) || null;
+    return this.eventsService.events().find((e) => e._id === id) || null;
   });
 
   isLoading = signal(false);
@@ -44,24 +44,22 @@ export class EventDetail implements OnInit {
 
     if (eventId) {
       this.loadEvent(eventId);
-    this.eventId.set(eventId);
+      this.eventId.set(eventId);
     } else {
       this.router.navigate(['/events']);
     }
   }
 
   private loadEvent(id: string): void {
-    // Si el evento no está en el servicio, lo descargamos
-    const existingEvent = this.eventsService.events().find(e => e._id === id);
+    const existingEvent = this.eventsService.events().find((e) => e._id === id);
     if (!existingEvent) {
       this.isLoading.set(true);
       this.eventsService.getEventById(id).subscribe({
         next: (event) => {
-          // Esto hará que el 'computed' de arriba se active.
-          this.eventsService['_events'].update(events => [...events, event]);
+          this.eventsService['_events'].update((events) => [...events, event]);
           this.isLoading.set(false);
         },
-        error: () => this.isLoading.set(false)
+        error: () => this.isLoading.set(false),
       });
     }
   }
@@ -77,7 +75,7 @@ export class EventDetail implements OnInit {
     if (previousUrl) {
       this.router.navigateByUrl(previousUrl);
     } else {
-      this.router.navigate(['/events']); // Fallback por si entran directos por URL
+      this.router.navigate(['/events']); 
     }
   }
 
@@ -106,7 +104,6 @@ export class EventDetail implements OnInit {
     this.eventsService.handleLeaveEvent(event);
   }
 
-  // HELPERS PARA EL TEMPLATE
   getMapUrl(): SafeResourceUrl {
     const event = this.event();
     if (!event) return '';
@@ -123,7 +120,7 @@ export class EventDetail implements OnInit {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 
@@ -136,7 +133,7 @@ export class EventDetail implements OnInit {
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   }
 

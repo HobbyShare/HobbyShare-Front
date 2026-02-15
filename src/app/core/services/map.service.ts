@@ -9,7 +9,7 @@ export class MapService {
   private maps: Map<string, L.Map> = new Map();
 
   initMap(config: MapConfig): L.Map {
-    // Si ya existe un mapa con este ID, destruirlo primero
+
     this.destroyMap(config.containerId);
 
     const map = L.map(config.containerId).setView(config.center, config.zoom);
@@ -82,7 +82,7 @@ export class MapService {
     markers.forEach((marker) => marker.remove());
   }
 
-  // Centra el mapa en unas coordenadas
+
   setView(map: L.Map, coords: [number, number], zoom?: number): void {
     map.setView(coords, zoom || map.getZoom());
   }
@@ -108,21 +108,21 @@ export class MapService {
     });
   }
 
-  // Añade un listener de click al mapa
+
   onMapClick(map: L.Map, callback: (lat: number, lng: number) => void): void {
     map.on('click', (e: L.LeafletMouseEvent) => {
       callback(e.latlng.lat, e.latlng.lng);
     });
   }
 
-  // Añade un listener de drag al marcador
+
   onMarkerDragEnd(marker: L.Marker, callback: (lat: number, lng: number) => void): void {
     marker.on('dragend', (event) => {
       const position = event.target.getLatLng();
       callback(position.lat, position.lng);
     });
   }
-  // Marcador por defecto (rojo)
+
   private createDefaultIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -134,7 +134,7 @@ export class MapService {
     });
   }
 
-  // Marcador para eventos (naranja)
+
   createEventIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
@@ -146,7 +146,7 @@ export class MapService {
     });
   }
 
-  // Marcador para el usuario (azul)
+
   createUserIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -158,7 +158,7 @@ export class MapService {
     });
   }
 
-  // Marcador para selección (verde)
+
   createSelectionIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',

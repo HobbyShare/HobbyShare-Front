@@ -17,7 +17,6 @@ describe('EventsList Component', () => {
   let eventsServiceMock: any;
   let authServiceMock: any;
 
-  // Mock data
   const mockEvents: EventModel[] = [
     {
       _id: '1',
@@ -50,7 +49,6 @@ describe('EventsList Component', () => {
   ];
 
   beforeEach(async () => {
-    // Mock del EventsService
     eventsServiceMock = {
       events: signal<EventModel[]>([]),
       loading: signal<boolean>(false),
@@ -66,7 +64,6 @@ describe('EventsList Component', () => {
       canUserLeave: vi.fn(),
     };
 
-    // Mock del AuthService
     authServiceMock = {
       currentUserId: signal<string | null>('user123'),
       isAuthenticated: signal<boolean>(true),
