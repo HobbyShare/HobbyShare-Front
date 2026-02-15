@@ -31,6 +31,7 @@
           @if (isCreator()) {
             <button
               class="bg-indigo-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-indigo-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+              data-testid="edit-btn"
               (click)="goToEdit()">
               Editar
             </button>
@@ -48,7 +49,8 @@
               </button>
             } @else {
               <button
-                class="bg-emerald-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-emerald-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                class="w-full sm:w-auto bg-emerald-500 text-white px-6 py-3 rounded-3xl font-semibold hover:bg-emerald-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg hover:shadow-xl whitespace-normal"
+                data-testid="join-btn"
                 (click)="joinEvent()">
                 Unirme al evento
               </button>
@@ -131,7 +133,7 @@
           </div>
         </div>
 
-        
+
         <div class="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:col-span-2">
           <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b-2 border-indigo-500 flex items-center gap-2">
             Ubicación
@@ -158,8 +160,8 @@
         </div>
       </div>
 
-
-      <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white shadow-2xl flex gap-2 z-50">
+      <!-- Footer con acciones móviles (visible solo en móvil) -->
+      <div class="md:hidden fixed bottom-0 left-0 right-0 p-4 bg-white shadow-2xl flex flex-col gap-2 z-50">
         @if (isCreator()) {
           <button
             class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white py-3 rounded-3xl font-semibold"
@@ -174,7 +176,7 @@
         } @else {
           @if (isParticipant()) {
             <button
-              class="w-full bg-pink-300 hover:bg-pink-400 text-white py-3 rounded-3xl font-semibold"
+              class="w-full  bg-pink-300 hover:bg-pink-400 text-white py-3 rounded-3xl font-semibold"
               (click)="leaveEvent()">
               Salir del evento
             </button>

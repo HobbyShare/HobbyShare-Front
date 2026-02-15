@@ -44,6 +44,27 @@ export class MapComponent implements OnInit, OnDestroy {
         this.paintEventMarkers(currentEvents);
       }
     });
+    effect(() => {
+    const coords = this.initialCoords; // Angular detectará el cambio si pasas un nuevo objeto
+    if (this.map && coords && this.mode === 'view') {
+
+      // 1. Mover la vista del mapa a la nueva posición
+      this.map.setView([coords.lat, coords.lng], this.zoom);
+
+      // 2. Limpiar marcadores previos (opcional, para no duplicar)
+      if (this.selectionMarker) {
+        this.mapService.removeMarker(this.selectionMarker);
+      }
+
+      // 3. Crear el nuevo marcador en la posición actualizada
+      this.selectionMarker = this.mapService.createMarker(this.map, {
+        lat: coords.lat,
+        lng: coords.lng,
+        icon: this.mapService.createSelectionIcon(),
+        popup: 'Nueva ubicación seleccionada',
+      });
+    }
+  });
   }
 
   ngOnInit(): void {
@@ -60,7 +81,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     }, 0);
     (window as any).navigateToEvent = (eventId: string) => {
-      this.navigationService.setPreviousUrl(this.router.url);
+      this.navigationService.setPreviousUrl(this.router.url); // Guarda si vienes de /events o /map
       this.router.navigate(['/events', eventId]);
     };
   }
@@ -86,6 +107,15 @@ export class MapComponent implements OnInit, OnDestroy {
 
     if (this.initialCoords && this.mode === 'select') {
       this.placeSelectionMarker(this.initialCoords.lat, this.initialCoords.lng);
+    }
+    if (this.mode === 'view' && this.initialCoords) {
+      this.map.setView(center, this.zoom);
+      this.mapService.createMarker(this.map!, {
+        lat: this.initialCoords.lat,
+        lng: this.initialCoords.lng,
+        icon: this.mapService.createSelectionIcon(), // El mismo icono del modal
+        popup: 'Ubicación del evento'
+      });
     }
   }
 
@@ -113,7 +143,7 @@ export class MapComponent implements OnInit, OnDestroy {
       popup: 'Ubicación seleccionada',
     });
 
-    
+
     this.mapService.onMarkerDragEnd(this.selectionMarker, (newLat, newLng) => {
       this.updateSelectedLocation(newLat, newLng);
     });

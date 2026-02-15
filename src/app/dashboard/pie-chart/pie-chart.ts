@@ -37,7 +37,7 @@ export class PieChartComponent implements AfterViewInit {
 
 
     const ctx = this.pieCanvas.nativeElement.getContext('2d')
-    
+
 
     this.pieChart = new Chart(ctx, {
       type: 'pie',

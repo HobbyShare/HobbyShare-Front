@@ -25,6 +25,7 @@ export class EventsList implements OnInit{
   error = this.eventsService.error;
 
   readonly Array = Array;
+  
 
   searchText = signal<string>('');
   selectedHobby = signal<string>('');
@@ -71,7 +72,6 @@ export class EventsList implements OnInit{
 
   ngOnInit(): void {
     this.eventsService.loadEvents();
-
     this.route.queryParams.subscribe(params => {
       this.loadFiltersFromUrl(params);
     });
@@ -101,7 +101,6 @@ export class EventsList implements OnInit{
   leaveEvent(event: EventModel | undefined): void {
     this.eventsService.handleLeaveEvent(event || null);
   }
-
 
   loadFiltersFromUrl(params: any): void {
     if (params['search']) {
@@ -168,7 +167,6 @@ export class EventsList implements OnInit{
     this.updateURL();
   }
 
-
   isActiveSort(type: 'date'): boolean {
     return this.sortBy() === type;
   }
@@ -179,7 +177,6 @@ export class EventsList implements OnInit{
     }
     return this.sortAscending() ? '↑' : '↓';
   }
-
 
   clearFilters(): void {
     this.searchText.set('');
@@ -192,7 +189,6 @@ export class EventsList implements OnInit{
     });
   }
 
-  
   isEventCreator(event: EventModel): boolean {
     return this.eventsService.isUserCreator(event);
   }

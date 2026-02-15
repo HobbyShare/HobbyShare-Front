@@ -16,16 +16,13 @@
     }
   </select>
 
-
   <button type="button" [class.bg-indigo-600]="isActiveSort('date')" [class.text-white]="isActiveSort('date')" [class.bg-gray-200]="!isActiveSort('date')" [class.text-gray-700]="!isActiveSort('date')" (click)="toggleSort('date')" class="px-3 py-2 text-sm rounded-lg font-medium transition-all duration-300 hover:shadow-md whitespace-nowrap">
     Fecha {{ getSortIcon('date') }}
   </button>
 
-
   <button type="button" (click)="clearFilters()" class="px-3 py-2 text-sm bg-red-100 text-red-600 rounded-lg font-medium hover:bg-red-200 transition-all duration-300" title="Limpiar filtros">
     <i class="fa fa-trash-o" style="font-size:20px"></i>
   </button>
-
 
   <span class="text-xs text-gray-600 ml-auto text-right whitespace-nowrap">
     {{ filteredEvents().length }} / {{ events().length }} eventos
@@ -49,7 +46,7 @@
   }
   @else if (error()) {
     <div class="text-center p-12 bg-red-50 border-2 border-red-200 rounded-2xl">
-      <div class="text-red-600 text-lg mb-4">{{ error() }}</div>
+      <div class="text-red-600 text-lg mb-4" data-testid="error-load">{{ error() }}</div>
       <button
         (click)="eventsService.loadEvents()"
         class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5">
@@ -87,9 +84,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       @for (event of filteredEvents(); track event._id) {
         <div class="bg-white rounded-3xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col cursor-pointer"
+            data-testid="event-card"
             (click)="goToEventDetail(event._id)">
 
-
+         
           <div class="  text-stone-900 p-6 ">
             <div class="flex justify-between items-start gap-4">
               <h3
@@ -105,7 +103,6 @@
               }
             </div>
           </div>
-
 
           <div class="p-6 pt-2 flex-1">
             <p class="text-gray-600 leading-relaxed mb-6 line-clamp-3 text-sm">
@@ -133,7 +130,6 @@
             </div>
           </div>
 
-         
           <div class="p-4 pt-0   flex flex-wrap gap-2">
             <button
               type="button"
