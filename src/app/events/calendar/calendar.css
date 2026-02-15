@@ -1,17 +1,17 @@
-/* Estilos base del calendario */
+
 :host ::ng-deep .fc {
   font-family: inherit;
   background: transparent;
-  font-size: 0.875rem; /* Más pequeño en móvil */
+  font-size: 0.875rem;
 }
 
-/* Header/Toolbar responsive */
+
 :host ::ng-deep .fc-header-toolbar {
-  padding: 1rem; /* Menos padding en móvil */
+  padding: 1rem;
   margin-bottom: 0 !important;
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
-  flex-direction: column !important; /* Stack vertical en móvil */
+  flex-direction: column !important;
   gap: 0.75rem;
 }
 
@@ -19,11 +19,11 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  flex-wrap: wrap; /* Permitir wrap en móvil */
+  flex-wrap: wrap;
 }
 
 :host ::ng-deep .fc-toolbar-title {
-  font-size: 1.125rem; /* Más pequeño en móvil */
+  font-size: 1.125rem;
   font-weight: 300;
   color: #4338ca;
   letter-spacing: 0.025em;
@@ -31,19 +31,19 @@
   width: 100%;
 }
 
-/* Botones responsive */
+
 :host ::ng-deep .fc-button {
   background: white !important;
   color: #6b7280 !important;
   border: 1px solid #e5e7eb !important;
   border-radius: 0.5rem !important;
-  padding: 0.5rem 0.75rem !important; /* Menos padding en móvil */
+  padding: 0.5rem 0.75rem !important;
   font-weight: 500 !important;
-  font-size: 0.75rem !important; /* Más pequeño en móvil */
+  font-size: 0.75rem !important;
   text-transform: none !important;
   box-shadow: none !important;
   transition: all 0.2s !important;
-  touch-action: manipulation; /* Mejor para touch */
+  touch-action: manipulation;
 }
 
 :host ::ng-deep .fc-button:hover,
@@ -63,25 +63,25 @@
   border-color: #4338ca !important;
 }
 
-/* Header de columnas (días de la semana) */
+
 :host ::ng-deep .fc-col-header-cell {
   background: #f9fafb;
   border-color: #e5e7eb !important;
-  padding: 0.5rem 0.25rem; /* Menos padding en móvil */
+  padding: 0.5rem 0.25rem;
 }
 
 :host ::ng-deep .fc-col-header-cell-cushion {
   color: #6b7280;
   font-weight: 500;
-  font-size: 0.625rem; /* Más pequeño en móvil */
+  font-size: 0.625rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Celdas de días */
+
 :host ::ng-deep .fc-daygrid-day {
   border-color: #e5e7eb !important;
-  min-height: 60px; /* Altura mínima para móvil */
+  min-height: 60px;
 }
 
 :host ::ng-deep .fc-daygrid-day:hover {
@@ -91,11 +91,11 @@
 :host ::ng-deep .fc-daygrid-day-number {
   color: #1f2937;
   font-weight: 400;
-  padding: 0.25rem; /* Menos padding en móvil */
-  font-size: 0.75rem; /* Más pequeño en móvil */
+  padding: 0.25rem;
+  font-size: 0.75rem;
 }
 
-/* Día actual */
+
 :host ::ng-deep .fc-day-today {
   background: #eef2ff !important;
 }
@@ -105,13 +105,13 @@
   font-weight: 600;
 }
 
-/* Eventos en el calendario */
+
 :host ::ng-deep .fc-event {
   background: #4338ca !important;
   color: white;
   border: none !important;
   border-radius: 0.375rem !important;
-  padding: 0.125rem 0.375rem !important; /* Más compacto en móvil */
+  padding: 0.125rem 0.375rem !important;
   margin: 0.125rem !important;
   cursor: pointer !important;
   transition: all 0.2s !important;
@@ -128,7 +128,7 @@
 
 :host ::ng-deep .fc-event-title {
   font-weight: 500 !important;
-  font-size: 0.65rem !important; /* Más pequeño en móvil */
+  font-size: 0.65rem !important;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -139,12 +139,12 @@
   opacity: 0.9;
 }
 
-/* Días de otros meses */
+
 :host ::ng-deep .fc-day-other .fc-daygrid-day-number {
   color: #d1d5db;
 }
 
-/* Vista de tiempo (si la usas) */
+
 :host ::ng-deep .fc-timegrid-slot {
   border-color: #e5e7eb !important;
 }
@@ -154,14 +154,14 @@
   font-size: 0.75rem;
 }
 
-/* Scrollbar custom */
+
 :host ::ng-deep .fc-scroller {
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f9fafb;
 }
 
 :host ::ng-deep .fc-scroller::-webkit-scrollbar {
-  width: 6px; /* Más delgado en móvil */
+  width: 6px;
   height: 6px;
 }
 
@@ -178,7 +178,7 @@
   background: #9ca3af;
 }
 
-/* Vista de lista (mobile-friendly) */
+
 :host ::ng-deep .fc-list-event {
   cursor: pointer !important;
   touch-action: manipulation;
@@ -202,7 +202,7 @@
   font-size: 0.75rem;
 }
 
-/* Modal */
+
 .modal-backdrop {
   background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(4px);
@@ -236,9 +236,7 @@ dialog[open]#event_modal {
   margin: 0;
 }
 
-/* ========================================
-   RESPONSIVE: TABLET (640px+)
-   ======================================== */
+
 @media (min-width: 640px) {
   :host ::ng-deep .fc {
     font-size: 1rem;
@@ -292,9 +290,7 @@ dialog[open]#event_modal {
   }
 }
 
-/* ========================================
-   RESPONSIVE: DESKTOP (768px+)
-   ======================================== */
+
 @media (min-width: 768px) {
   :host ::ng-deep .fc-header-toolbar {
     padding: 1.5rem;
@@ -330,9 +326,7 @@ dialog[open]#event_modal {
   }
 }
 
-/* ========================================
-   RESPONSIVE: LARGE DESKTOP (1024px+)
-   ======================================== */
+
 @media (min-width: 1024px) {
   :host ::ng-deep .fc-daygrid-day {
     min-height: 120px;
@@ -347,11 +341,11 @@ dialog[open]#event_modal {
   }
 }
 
-/* Mejoras para touch en móvil */
+
 @media (hover: none) and (pointer: coarse) {
-  /* Aumentar área táctil en dispositivos touch */
+
   :host ::ng-deep .fc-button {
-    min-height: 44px; /* iOS recommended touch target */
+    min-height: 44px;
     min-width: 44px;
   }
 
@@ -359,13 +353,13 @@ dialog[open]#event_modal {
     min-height: 28px;
   }
 
-  /* Eliminar hover effects en touch devices */
+
   :host ::ng-deep .fc-daygrid-day:hover {
     background: transparent;
   }
 }
 
-/* Optimización para pantallas pequeñas en altura */
+
 @media (max-height: 600px) {
   :host ::ng-deep .fc-daygrid-day {
     min-height: 50px !important;

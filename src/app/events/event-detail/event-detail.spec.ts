@@ -13,8 +13,6 @@ describe('EventDetail', () => {
   let mockEventsService: any;
   let mockRouter: any;
   let eventsListSignal = signal<any[]>([]);
-
-  // Mock completo
   const mockEvent = {
     _id: '123',
     title: 'Evento de Prueba',
@@ -26,7 +24,7 @@ describe('EventDetail', () => {
     participants: [],
     creatorUser: 'Admin',
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
   };
 
   beforeEach(async () => {
@@ -38,7 +36,7 @@ describe('EventDetail', () => {
         update: vi.fn((updateFn) => {
           const currentEvents = eventsListSignal();
           eventsListSignal.set(updateFn(currentEvents));
-        })
+        }),
       },
 
       isUserCreator: vi.fn(),
@@ -50,11 +48,11 @@ describe('EventDetail', () => {
       handleJoinEvent: vi.fn(),
 
       handleDeleteEvent: vi.fn((ev, navfunc) => {
-        if (navfunc) navfunc(); // "pulsamos el botón" de la navegación
+        if (navfunc) navfunc();
         return of(true);
       }),
 
-      navigateToEdit: vi.fn()
+      navigateToEdit: vi.fn(),
     };
     mockRouter = { navigate: vi.fn() };
 
@@ -65,9 +63,9 @@ describe('EventDetail', () => {
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: { get: () => '123' } } }
-        }
-      ]
+          useValue: { snapshot: { paramMap: { get: () => '123' } } },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventDetail);
@@ -88,7 +86,14 @@ describe('EventDetail', () => {
 
   it('should show edit and delete buttons only for event creator', async () => {
     const id = '123';
-    const eventData = { _id: id, title: 'Test', hobby: 'Coding', lat: 0, lng: -3, participants: [] };
+    const eventData = {
+      _id: id,
+      title: 'Test',
+      hobby: 'Coding',
+      lat: 0,
+      lng: -3,
+      participants: [],
+    };
 
     eventsListSignal.set([eventData]);
 
@@ -119,13 +124,13 @@ describe('EventDetail', () => {
   it('should delete event and navigate back when creator clicks delete', async () => {
     const id = '123';
     const fullMockEvent = {
-        _id: id,
-        title: 'Evento a borrar',
-        participants: [],
-        date: new Date().toISOString(),
-        creatorUser: 'Admin',
-        lat: 40,
-        lng: -3
+      _id: id,
+      title: 'Evento a borrar',
+      participants: [],
+      date: new Date().toISOString(),
+      creatorUser: 'Admin',
+      lat: 40,
+      lng: -3,
     };
 
     eventsListSignal.set([fullMockEvent]);

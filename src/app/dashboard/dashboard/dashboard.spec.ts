@@ -11,24 +11,23 @@ describe('Dashboard', () => {
   let fixture: ComponentFixture<Dashboard>;
 
   beforeEach(async () => {
-    // Mocks simples de los servicios
     const mockEventsService = {
       loadEvents: () => {},
       getEventsByMonth: () => ({}),
-      getEventsByHobby: () => ({})
+      getEventsByHobby: () => ({}),
     };
 
     const mockUsersService = {
       loadUsers: () => {},
-      getNewUsersByMonth: () => ({})
+      getNewUsersByMonth: () => ({}),
     };
 
     await TestBed.configureTestingModule({
       imports: [Dashboard, PieChartComponent, BarChartComponent, LineChartComponent],
       providers: [
         { provide: EventsService, useValue: mockEventsService },
-        { provide: UsersService, useValue: mockUsersService }
-      ]
+        { provide: UsersService, useValue: mockUsersService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Dashboard);

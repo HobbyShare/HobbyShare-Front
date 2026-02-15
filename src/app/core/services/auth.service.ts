@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
   userName: string;
-  sub: string; // Este es el userId
+  sub: string;
   iat?: number;
   exp?: number;
 }
@@ -37,7 +37,7 @@ export class AuthService {
     try {
       const decoded = jwtDecode<JwtPayload>(token);
       this.currentUser.set(decoded.userName);
-      this.currentUserId.set(decoded.sub); // El userId está en 'sub'
+      this.currentUserId.set(decoded.sub);
     } catch (error) {
       console.error('Error decoding token:', error);
       this.logout();

@@ -1,7 +1,7 @@
 <nav class="px-4 md:px-6 py-4 md:py-6">
   <div class="flex flex-row justify-between items-center">
 
-    <!-- Logo -->
+    
     <a routerLink="/" class="flex items-center gap-2 md:gap-3 group z-50">
       <p class="text-2xl md:text-5xl font-bold text-indigo-700 group-hover:text-indigo-600 transition-colors duration-300">
         HobbyShare
@@ -9,7 +9,7 @@
     </a>
 
     @if (isAuthenticated()) {
-      <!-- Desktop Menu (hidden on mobile/tablet) -->
+
       <div class="hidden lg:flex items-center gap-4">
         <a routerLink="/events"
            routerLinkActive="text-stone-700"
@@ -49,7 +49,7 @@
         </button>
       </div>
 
-      <!-- Hamburger Button (visible on mobile/tablet) -->
+
       <button
         (click)="toggleMenu()"
         class="lg:hidden z-50 p-2 rounded-lg hover:bg-indigo-50 transition-colors duration-300"
@@ -67,7 +67,7 @@
         </div>
       </button>
 
-      <!-- Mobile/Tablet Menu -->
+
       <div
         class="fixed inset-0 bg-white z-40 lg:hidden transition-all duration-300 ease-in-out"
         [class.opacity-0]="!isMenuOpen()"
@@ -119,7 +119,7 @@
       </div>
 
     } @else {
-      <!-- Login Button (always visible) -->
+
       <a routerLink="/login"
          class="border-2 border-white text-stone-900 bg-white rounded-3xl
                 shadow-lg hover:shadow-2xl hover:scale-105 hover:bg-pink-200

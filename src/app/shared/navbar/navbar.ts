@@ -9,22 +9,19 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './navbar.css',
 })
 export class NavbarComponent {
+  private authService = inject(AuthService);
 
-  private authService = inject(AuthService)
-
-  isAuthenticated = this.authService.isAuthenticated
+  isAuthenticated = this.authService.isAuthenticated;
 
   isMenuOpen = signal(false);
 
   onLogout() {
     this.closeMenu();
-    this.authService.logout()
-
+    this.authService.logout();
   }
 
-toggleMenu() {
-    this.isMenuOpen.update(value => !value);
-    // Prevenir scroll cuando el menú está abierto
+  toggleMenu() {
+    this.isMenuOpen.update((value) => !value);
     if (this.isMenuOpen()) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -36,7 +33,4 @@ toggleMenu() {
     this.isMenuOpen.set(false);
     document.body.style.overflow = '';
   }
-
-
-
 }
