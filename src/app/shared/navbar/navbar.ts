@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { Component, inject, signal } from '@angular/core';
-=======
-import { Component, inject } from '@angular/core';
->>>>>>> 6687a7b5aeed55d6100e807748b4bfbafc63333b
 import { AuthService } from '../../core/services/auth.service';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -18,20 +14,14 @@ export class NavbarComponent {
 
   isAuthenticated = this.authService.isAuthenticated
 
-<<<<<<< HEAD
   isMenuOpen = signal(false);
 
   onLogout() {
     this.closeMenu();
-=======
-  onLogout() {
-
->>>>>>> 6687a7b5aeed55d6100e807748b4bfbafc63333b
     this.authService.logout()
 
   }
 
-<<<<<<< HEAD
 toggleMenu() {
     this.isMenuOpen.update(value => !value);
     // Prevenir scroll cuando el menú está abierto
@@ -47,9 +37,6 @@ toggleMenu() {
     document.body.style.overflow = '';
   }
 
-  
-=======
 
->>>>>>> 6687a7b5aeed55d6100e807748b4bfbafc63333b
 
 }
