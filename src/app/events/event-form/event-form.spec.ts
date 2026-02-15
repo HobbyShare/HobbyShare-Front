@@ -15,15 +15,19 @@ describe('EventForm', () => {
 
   beforeEach(async () => {
     mockEventsService = {
-      getEventById: vi.fn().mockReturnValue(of({ title: 'Cena', date: '2026-10-10', lat: 10, lng: 10, hobby: Hobby.Sports })),
+      getEventById: vi
+        .fn()
+        .mockReturnValue(
+          of({ title: 'Cena', date: '2026-10-10', lat: 10, lng: 10, hobby: Hobby.Sports }),
+        ),
       createEvent: vi.fn().mockReturnValue(of({})),
       updateEvent: vi.fn().mockReturnValue(of({})),
-      events: signal([])
+      events: signal([]),
     };
 
     mockRouter = {
       navigate: vi.fn(),
-      navigateByUrl: vi.fn()
+      navigateByUrl: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -33,10 +37,9 @@ describe('EventForm', () => {
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: { get: vi.fn().mockReturnValue(null) } } } // Modo creación por defecto
+          useValue: { snapshot: { paramMap: { get: vi.fn().mockReturnValue(null) } } }, 
         },
-        // provideRouter([])
-      ]
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EventForm);
@@ -53,7 +56,6 @@ describe('EventForm', () => {
   });
 
   it('should be invalid when fields are empty', () => {
-    // Simulamos el click en submit
     component.onSubmitEventForm();
     fixture.detectChanges();
 
@@ -68,7 +70,7 @@ describe('EventForm', () => {
       hobby: Hobby.Sports,
       date: '2026-10-10' as any,
       lat: 0,
-      lng: 0
+      lng: 0,
     });
 
     const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {});
@@ -86,9 +88,9 @@ describe('EventForm', () => {
       hobby: Hobby.Sports,
       date: '2026-10-10' as any,
       lat: 40.41,
-      lng: -3.70
+      lng: -3.7,
     });
-    component.selectedLocation.set({ lat: 40.41, lng: -3.70 });
+    component.selectedLocation.set({ lat: 40.41, lng: -3.7 });
 
     component.onSubmitEventForm();
 
@@ -101,12 +103,12 @@ describe('EventForm', () => {
     component.selectedLocation.set({ lat: 10, lng: 10 });
 
     component.eventFormModel.set({
-        title: 'Editado',
-        description: 'Desc',
-        hobby: Hobby.Sports,
-        date: '2026-10-10' as any,
-        lat: 10,
-        lng: 10
+      title: 'Editado',
+      description: 'Desc',
+      hobby: Hobby.Sports,
+      date: '2026-10-10' as any,
+      lat: 10,
+      lng: 10,
     });
 
     component.onSubmitEventForm();

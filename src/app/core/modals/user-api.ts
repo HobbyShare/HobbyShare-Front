@@ -1,4 +1,4 @@
-export interface User {  //lo que se trae del back
+export interface User {
   id: string;
   userName: string;
   name: string;

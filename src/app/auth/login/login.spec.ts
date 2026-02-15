@@ -12,12 +12,11 @@ describe('LoginComponent', () => {
   let authService: any;
 
   beforeEach(async () => {
-    // Mock del AuthService
     const authServiceMock = {
       login: vi.fn(),
       getToken: vi.fn(),
       saveToken: vi.fn(),
-      logout: vi.fn()
+      logout: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -25,8 +24,8 @@ describe('LoginComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         provideHttpClient(),
-        provideRouter([])
-      ]
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
@@ -35,26 +34,22 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
   });
 
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 
   it('should have invalid form initially', () => {
     expect(component.loginForm.invalid).toBeTruthy();
   });
 
-
   it('should be valid when filled correctly', () => {
     component.loginForm.setValue({
       userName: 'testuser',
-      password: 'password123'
+      password: 'password123',
     });
 
     expect(component.loginForm.valid).toBeTruthy();
   });
-
 
   it('should require username', () => {
     const usernameControl = component.loginForm.get('userName');
@@ -63,7 +58,6 @@ describe('LoginComponent', () => {
     expect(usernameControl?.hasError('required')).toBeTruthy();
   });
 
-
   it('should require password', () => {
     const passwordControl = component.loginForm.get('password');
     passwordControl?.setValue('');
@@ -71,21 +65,20 @@ describe('LoginComponent', () => {
     expect(passwordControl?.hasError('required')).toBeTruthy();
   });
 
-
   it('should call authService.login on submit', () => {
     const mockResponse = { access_token: 'test-token' };
     authService.login.mockReturnValue(of(mockResponse));
 
     component.loginForm.setValue({
       userName: 'testuser',
-      password: 'password123'
+      password: 'password123',
     });
 
     component.onSubmit();
 
     expect(authService.login).toHaveBeenCalledWith({
       userName: 'testuser',
-      password: 'password123'
+      password: 'password123',
     });
   });
 });

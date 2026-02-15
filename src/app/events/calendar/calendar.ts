@@ -74,7 +74,6 @@ export class CalendarComponent implements OnInit {
     start: new Date(event.date).toISOString(),
     extendedProps: {
       description: event.description,
-      // location: event.??
       participants: event.participants.length,
       creator: event.creatorUser,
       hobby: event.hobby,

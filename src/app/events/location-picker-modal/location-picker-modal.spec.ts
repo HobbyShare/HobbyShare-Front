@@ -8,7 +8,7 @@ import { MapService } from '../../core/services/map.service';
 @Component({
   selector: 'app-map',
   template: '',
-  standalone: true
+  standalone: true,
 })
 class MockMapComponent {
   @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
@@ -24,12 +24,9 @@ describe('LocationPickerModal', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [LocationPickerModal, MockMapComponent],
-      providers: [
-        // 2. Inyecta el mock para que el MapComponent real no haga nada
-        { provide: MapService, useValue: mockMapService }
-      ],      schemas: [NO_ERRORS_SCHEMA]
-      })
-      .compileComponents();
+      providers: [{ provide: MapService, useValue: mockMapService }],
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LocationPickerModal);
     component = fixture.componentInstance;
@@ -46,7 +43,7 @@ describe('LocationPickerModal', () => {
   });
 
   it('should update selectedLocation when map emits coordinates', () => {
-    const coords = { lat: 40.41, lng: -3.70 };
+    const coords = { lat: 40.41, lng: -3.7 };
 
     component.onLocationSelected(coords);
 

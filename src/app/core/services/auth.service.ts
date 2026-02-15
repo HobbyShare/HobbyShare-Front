@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 
 interface JwtPayload {
   userName: string;
-  sub: string; // Este es el userId
+  sub: string;
   iat?: number;
   exp?: number;
 }
@@ -19,7 +19,7 @@ export class AuthService {
 
   isAuthenticated = signal<boolean>(false)
   currentUser = signal<string | null>(null)
-  currentUserId = signal<string | null>(null); // ⬅️ NUEVO
+  currentUserId = signal<string | null>(null);
 
   constructor(
     private http: HttpClient,
@@ -29,7 +29,7 @@ export class AuthService {
     const token = this.getToken()
       if (token) {
         this.isAuthenticated.set(true)
-        this.loadUserFromToken(token); // ⬅️ NUEVO
+        this.loadUserFromToken(token);
       }
   }
 
@@ -37,7 +37,7 @@ export class AuthService {
     try {
       const decoded = jwtDecode<JwtPayload>(token);
       this.currentUser.set(decoded.userName);
-      this.currentUserId.set(decoded.sub); // El userId está en 'sub'
+      this.currentUserId.set(decoded.sub);
     } catch (error) {
       console.error('Error decoding token:', error);
       this.logout();
@@ -53,8 +53,8 @@ export class AuthService {
       tap((response: any) => {
         this.saveToken(response.access_token)
         this.isAuthenticated.set(true)
-        this.loadUserFromToken(response.access_token); // ⬅️ AÑADIR
-        // this.currentUser.set(credentials.userName)
+        this.loadUserFromToken(response.access_token);
+
       })
     )
   }
@@ -75,12 +75,10 @@ export class AuthService {
     localStorage.removeItem('token')
     this.isAuthenticated.set(false)
     this.currentUser.set(null)
-    this.currentUserId.set(null); // ⬅️ AÑADIR
+    this.currentUserId.set(null);
     this.router.navigate(['/login'])
   }
 
 }
-// function jwtDecode<T>(token: string) {
-//   throw new Error('Function not implemented.');
-// }
+
 

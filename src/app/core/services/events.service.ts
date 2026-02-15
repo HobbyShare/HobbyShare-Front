@@ -212,13 +212,13 @@ export class EventsService {
     if (confirmed) {
       this.deleteEventService(event._id).subscribe({
         next: () => {
-          console.log('✅ Evento eliminado correctamente');
+          console.log('Evento eliminado correctamente');
           if (onSuccess) {
             onSuccess();
           }
         },
         error: (err) => {
-          console.error('❌ Error al eliminar:', err);
+          console.error('Error al eliminar:', err);
         }
       });
     }
