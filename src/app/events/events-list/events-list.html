@@ -49,7 +49,7 @@
   }
   @else if (error()) {
     <div class="text-center p-12 bg-red-50 border-2 border-red-200 rounded-2xl">
-      <div class="text-red-600 text-lg mb-4">{{ error() }}</div>
+      <div class="text-red-600 text-lg mb-4" data-testid="error-load">{{ error() }}</div>
       <button
         (click)="eventsService.loadEvents()"
         class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5">
@@ -87,6 +87,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       @for (event of filteredEvents(); track event._id) {
         <div class="bg-white rounded-3xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col cursor-pointer"
+            data-testid="event-card"
             (click)="goToEventDetail(event._id)">
 
           <!-- Card Header -->

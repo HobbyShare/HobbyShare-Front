@@ -6,13 +6,14 @@ import { form, required, FormField } from '@angular/forms/signals';
 import { Hobby } from '../../core/enums/hobby.enum';
 import { LocationPickerModal } from '../location-picker-modal/location-picker-modal';
 import { CommonModule } from '@angular/common';
-import { DomSanitizer } from '@angular/platform-browser'; // <--- Importación clave
+import { DomSanitizer } from '@angular/platform-browser';
 import { NavigationService } from '../../core/services/navigation.service';
+import { MapComponent } from '../map/map';
 
 @Component({
   selector: 'app-event-form',
   standalone: true,
-  imports: [FormField, LocationPickerModal, CommonModule],
+  imports: [FormField, LocationPickerModal, CommonModule, MapComponent],
   templateUrl: './event-form.html',
   styleUrl: './event-form.css',
 })
@@ -44,7 +45,6 @@ export class EventForm implements OnInit {
     lng: 0,
   });
 
-  // Nota: Cambiado de createEventForm() a createEventForm para que funcione con [formField]
   createEventForm = form(this.eventFormModel, (path) => {
     required(path.title, { message: 'El título es obligatorio' });
     required(path.description, { message: 'La descripción es obligatoria' });
@@ -64,14 +64,16 @@ export class EventForm implements OnInit {
   private loadEventForEdit(): void {
     this.isLoadingEvent.set(true);
     const id = this.eventId()!;
-
     this.eventsService.getEventById(id).subscribe({
       next: (event) => {
+        const formattedDate = event.date
+                ? new Date(event.date).toISOString().slice(0, 16)
+                : '';
         this.eventFormModel.set({
           title: event.title,
           description: event.description,
           hobby: Array.isArray(event.hobby) ? event.hobby[0] : event.hobby,
-          date: event.date,
+          date: (formattedDate.split('T')[0]) as any,
           lat: event.lat,
           lng: event.lng,
         });
@@ -132,10 +134,6 @@ export class EventForm implements OnInit {
     });
   }
 
-  // ============================================
-  // GESTIÓN DEL MODAL DE UBICACIÓN
-  // ============================================
-
   openLocationPicker(): void {
     this.isLocationModalOpen.set(true);
   }
@@ -165,10 +163,6 @@ export class EventForm implements OnInit {
       lng: 0,
     }));
   }
-
-  // ============================================
-  // HELPERS PARA EL TEMPLATE
-  // ============================================
 
   get hasLocation(): boolean {
     const location = this.selectedLocation();
@@ -201,3 +195,4 @@ export class EventForm implements OnInit {
     }
   }
 }
+
