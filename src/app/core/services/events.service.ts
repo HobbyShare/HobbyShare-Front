@@ -4,6 +4,7 @@ import { EventModel, CreateEventDto } from '../modals/event-model';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { Hobby } from '../enums/hobby.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,30 @@ export class EventsService {
   private _events = signal<EventModel[]>([]);
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
+  private _selectedHobby = signal<string>('');
 
+  selectedHobby = this._selectedHobby.asReadonly();
   events = this._events.asReadonly();
   loading = this._loading.asReadonly();
   error = this._error.asReadonly();
 
+  mapFilteredEvents = computed(() => {
+    const allEvents = this._events();
+    const filterValue = this._selectedHobby();
+
+    if (!filterValue || filterValue === '') {
+      return allEvents;
+    }
+
+    return allEvents.filter(e => {
+      if (!e.hobby) return false;
+
+      return String(e.hobby).trim() === String(filterValue).trim();
+    });
+  });
+
   eventsCount = computed(() => this._events().length);
+  hobbyList = Object.values(Hobby);
 
   constructor(private http: HttpClient) {}
 
@@ -238,6 +257,14 @@ export class EventsService {
 
   clearError(): void {
     this._error.set(null);
+  }
+
+  updateMapFilter(hobby: string): void {
+  this._selectedHobby.set(hobby);
+}
+
+  updateHobbyFilter(hobby: string): void {
+    this._selectedHobby.set(hobby);
   }
 
   getEventsByHobby()  {
