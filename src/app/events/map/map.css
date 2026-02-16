@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> refactor/styles
 #map {
   height: 100vh;
 }
 
+<<<<<<< HEAD
 .map-container {
   width: 100%;
   height: 100%;
@@ -123,3 +127,15 @@
     min-height: 250px;
   }
 }
+=======
+
+.cursor-crosshair .leaflet-container {
+  cursor: crosshair !important;
+}
+
+
+.modal-map .leaflet-map {
+  height: 500px;
+  min-height: 350px;
+}
+>>>>>>> refactor/styles

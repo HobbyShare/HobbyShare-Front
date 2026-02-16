@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p>location-picker-modal works!</p>
 @if (isModalOpen) {
   <div class="modal-overlay" (click)="onBackdropClick($event)">
@@ -8,14 +9,37 @@
         <button
           type="button"
           class="btn-close"
+=======
+
+
+@if (isModalOpen) {
+  <div
+    class="fixed inset-0 z-9999 flex items-center justify-center bg-black/60 p-4 animate-in fade-in duration-200"
+    (click)="onBackdropClick($event)">
+
+    <div
+      class="flex flex-col w-full max-w-225 max-h-[90vh] bg-white rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.3)] animate-in slide-in-from-bottom-8 duration-300 md:max-h-[90vh] max-sm:max-h-[95vh] max-sm:rounded-b-none">
+
+      <div class="flex items-center justify-between px-6 py-5 bg-gray-50 border-b border-gray-200 rounded-t-lg max-sm:px-4 max-sm:py-4">
+        <h2 class="m-0 text-xl font-semibold text-gray-900 max-sm:text-[1.1rem]">
+          📍 Seleccionar ubicación del evento
+        </h2>
+        <button
+          type="button"
+          class="flex items-center justify-center w-8 h-8 text-2xl text-gray-500 rounded hover:bg-gray-200 hover:text-gray-900 transition-all"
+>>>>>>> refactor/styles
           (click)="closeModal()"
           aria-label="Cerrar modal">
           ✕
         </button>
       </div>
 
+<<<<<<< HEAD
       <!-- Body - Mapa -->
       <div class="modal-body modal-map">
+=======
+      <div class="flex-1 flex flex-col overflow-hidden">
+>>>>>>> refactor/styles
         <app-map
           mode="select"
           [initialCoords]="initialCoords"
@@ -25,17 +49,28 @@
         </app-map>
       </div>
 
+<<<<<<< HEAD
       <!-- Footer -->
       <div class="modal-footer">
         <button
           type="button"
           class="btn btn-secondary"
+=======
+      <div class="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg max-sm:flex-col max-sm:p-4">
+        <button
+          type="button"
+          class="px-6 py-2 text-[0.95rem] rounded-3xl font-medium text-white shadow-lg hover:shadow-2xl hover:scale-105 bg-gray-500 hover:bg-gray-600 active:scale-[0.98] transition-all max-sm:w-full"
+>>>>>>> refactor/styles
           (click)="closeModal()">
           Cancelar
         </button>
         <button
           type="button"
+<<<<<<< HEAD
           class="btn btn-primary"
+=======
+          class="px-6 py-2 text-[0.95rem] rounded-3xl font-medium text-white shadow-lg hover:shadow-2xl hover:scale-105 bg-green-600 hover:bg-green-700 active:scale-[0.98] disabled:bg-green-300 disabled:cursor-not-allowed transition-all max-sm:w-full"
+>>>>>>> refactor/styles
           (click)="confirmLocation()"
           [disabled]="!selectedLocation()">
           ✓ Confirmar ubicación

@@ -1,9 +1,44 @@
-<p>events-list works!</p>
 
-<button (click)="goToCreateEvent()" class="bg-blue-600 hover:bg-blue-700 text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl transform hover:scale-105">
-  Crea un evento
+<div class="p-4 md:p-8 max-w-7xl mx-auto">
+  <div class="flex justify-between items-center mb-8 flex-wrap gap-4">
+
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-lg shadow-sm md:max-w-4xl">
+
+  <input type="text" id="search" [value]="searchText()" (input)="onSearchChange($event)" placeholder="🔍 Buscar por título..." class="flex-1 min-w-50 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+
+
+  <select id="hobby" [value]="selectedHobby()" (change)="onHobbyChange($event)" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+    <option value="">Todas las categorías</option>
+    @for (hobby of hobbyList; track hobby) {
+      @if (hobby !== '') {
+        <option [value]="hobby">{{ hobby }}</option>
+      }
+    }
+  </select>
+
+  <button type="button" [class.bg-indigo-600]="isActiveSort('date')" [class.text-white]="isActiveSort('date')" [class.bg-gray-200]="!isActiveSort('date')" [class.text-gray-700]="!isActiveSort('date')" (click)="toggleSort('date')" class="px-3 py-2 text-sm rounded-lg font-medium transition-all duration-300 hover:shadow-md whitespace-nowrap">
+    Fecha {{ getSortIcon('date') }}
+  </button>
+
+  <button type="button" (click)="clearFilters()" class="px-3 py-2 text-sm bg-red-100 text-red-600 rounded-lg font-medium hover:bg-red-200 transition-all duration-300" title="Limpiar filtros">
+    <i class="fa fa-trash-o" style="font-size:20px"></i>
+  </button>
+
+  <span class="text-xs text-gray-600 ml-auto text-right whitespace-nowrap">
+    {{ filteredEvents().length }} / {{ events().length }} eventos
+  </span>
+
+</div>
+
+<button
+  (click)="goToCreateEvent()"
+  class="bg-linear-to-r bg-pink-300 hover:bg-pink-300 rounded-4xl shadow-lg font-semibold
+            hover:shadow-2xl hover:scale-105 transition-all duration-300
+            cursor-pointer px-6 py-3 text-sm md:text-base w-full md:w-auto">
+  Crear evento
 </button>
 
+<<<<<<< HEAD
 @if (eventsService.events()) {
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     @for (event of eventsService.events(); track event._id) {
@@ -43,7 +78,145 @@
         </button>
       </div>
     }
+=======
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center min-h-100 text-gray-600">
+      <div class="w-12 h-12 border-4 border-gray-200 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+      <p class="text-lg">Cargando eventos...</p>
+    </div>
+  }
+  @else if (error()) {
+    <div class="text-center p-12 bg-red-50 border-2 border-red-200 rounded-2xl">
+      <div class="text-red-600 text-lg mb-4" data-testid="error-load">{{ error() }}</div>
+      <button
+        (click)="eventsService.loadEvents()"
+        class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 hover:-translate-y-0.5">
+        🔄 Reintentar
+      </button>
+    </div>
+  }
+  @else if (filteredEvents().length === 0 && events().length > 0) {
+  <div class="text-center p-16 bg-white rounded-2xl shadow-lg">
+    <div class="text-7xl mb-4">🔍</div>
+    <h3 class="text-2xl font-bold text-gray-800 mb-2">No se encontraron eventos</h3>
+    <p class="text-gray-600 text-lg mb-8">Prueba a ajustar los filtros de búsqueda</p>
+    <button
+      (click)="clearFilters()"
+      class="bg-linear-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+      Limpiar filtros
+    </button>
+>>>>>>> refactor/styles
   </div>
-} @else {
-  <h2>No hay eventos</h2>
 }
+
+  @else if (events().length === 0) {
+    <div class="text-center p-16 bg-white rounded-2xl shadow-lg">
+      <div class="text-7xl mb-4">📅</div>
+      <h3 class="text-2xl font-bold text-gray-800 mb-2">No hay eventos todavía</h3>
+      <p class="text-gray-600 text-lg mb-8">¡Sé el primero en crear un evento!</p>
+      <button
+        (click)="goToCreateEvent()"
+        class="bg-linear-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+        Crear primer evento
+      </button>
+    </div>
+  }
+
+  @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (event of filteredEvents(); track event._id) {
+        <div class="bg-white rounded-3xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 overflow-hidden flex flex-col cursor-pointer"
+            data-testid="event-card"
+            >
+
+
+          <div class="  text-stone-900 p-6 ">
+            <div class="flex justify-between items-start gap-4">
+              <h3
+                class="text-2xl font-bold text-center cursor-pointer hover:opacity-80 transition-opacity flex-1 line-clamp-2"
+                (click)="goToEventDetail(event._id)">
+                {{ event.title }}
+              </h3>
+
+              @if (isEventCreator(event)) {
+                <span class="bg-indigo-400 text-white px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap">
+                  Tu evento
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="p-6 pt-2 flex-1">
+            <p class="text-gray-600 leading-relaxed mb-6 line-clamp-3 text-sm">
+              {{ event.description }}
+            </p>
+
+            <div class="grid grid-cols-2 gap-2">
+
+                <p class="font-medium text-xs  text-indigo-700 bg-stone-50 rounded-3xl p-2 text-center">{{ event.creatorUser }}</p>
+
+
+
+                <p class="font-medium text-xs  text-indigo-700 bg-stone-50 rounded-3xl p-2 text-center">{{ event.participants.length }} {{ event.participants.length === 1 ? 'participante' : 'participantes' }}</p>
+
+
+
+                <p class="font-medium text-xs  text-indigo-700 bg-stone-50 rounded-3xl p-2 text-center">{{ event.date | date:'dd/MM/yyyy HH:mm' }}</p>
+
+
+              @if (event.hobby) {
+
+                  <p class="font-medium text-xs  text-indigo-700 bg-stone-50 rounded-3xl p-2 text-center">{{ Array.isArray(event.hobby) ? event.hobby.join(', ') : event.hobby }}</p>
+
+              }
+            </div>
+          </div>
+
+          <div class="p-4 pt-0   flex flex-wrap gap-2">
+            <button
+              type="button"
+              class="flex-1 min-w-fit bg-white hover:bg-indigo-400 text-stone-900 border-indigo-200 shadow-lg border-2 px-4 py-2 rounded-3xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+              (click)="goToEventDetail(event._id)">
+              Ver detalles
+            </button>
+
+            @if (isEventCreator(event)) {
+              <button
+                type="button"
+                class="flex-1 min-w-fit bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-3xl shadow-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                (click)="goToEditEvent(event._id)">
+                Editar
+              </button>
+              <button
+                type="button"
+                class="flex-1 min-w-fit bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-3xl shadow-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                (click)="deleteEvent(event)">
+                Eliminar
+              </button>
+            }
+
+            @else {
+              @if (canJoinEvent(event)) {
+                <button
+                  type="button"
+                  class="flex-1 min-w-fit bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 shadow-lg rounded-3xl font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  (click)="joinEvent(event)">
+                  Unirme
+                </button>
+              }
+
+              @if (canLeaveEvent(event)) {
+                <button
+                  type="button"
+                  class="flex-1 min-w-fit bg-pink-300 hover:bg-pink-400 text-stone-900 px-4 py-2 rounded-3xl shadow-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+                  (click)="leaveEvent(event)">
+                  Salir
+                </button>
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

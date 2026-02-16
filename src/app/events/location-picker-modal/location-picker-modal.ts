@@ -39,8 +39,13 @@ export class LocationPickerModal {
     this.modalClosed.emit();
     this.selectedLocation.set(null);
   }
+<<<<<<< HEAD
   
   // Prevenir que el click en el contenido cierre el modal
+=======
+
+  
+>>>>>>> refactor/styles
   onBackdropClick(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
       this.closeModal();

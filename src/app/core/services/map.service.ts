@@ -9,7 +9,6 @@ export class MapService {
   private maps: Map<string, L.Map> = new Map();
 
   initMap(config: MapConfig): L.Map {
-    // Si ya existe un mapa con este ID, destruirlo primero
     this.destroyMap(config.containerId);
 
     const map = L.map(config.containerId).setView(config.center, config.zoom);
@@ -82,7 +81,6 @@ export class MapService {
     markers.forEach((marker) => marker.remove());
   }
 
-  // Centra el mapa en unas coordenadas
   setView(map: L.Map, coords: [number, number], zoom?: number): void {
     map.setView(coords, zoom || map.getZoom());
   }
@@ -108,25 +106,18 @@ export class MapService {
     });
   }
 
-  /**
-   * Añade un listener de click al mapa
-   */
   onMapClick(map: L.Map, callback: (lat: number, lng: number) => void): void {
     map.on('click', (e: L.LeafletMouseEvent) => {
       callback(e.latlng.lat, e.latlng.lng);
     });
   }
 
-  /**
-   * Añade un listener de drag al marcador
-   */
   onMarkerDragEnd(marker: L.Marker, callback: (lat: number, lng: number) => void): void {
     marker.on('dragend', (event) => {
       const position = event.target.getLatLng();
       callback(position.lat, position.lng);
     });
   }
-  // Marcador por defecto (rojo)
   private createDefaultIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -138,7 +129,6 @@ export class MapService {
     });
   }
 
-  // Marcador para eventos (naranja)
   createEventIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
@@ -150,7 +140,6 @@ export class MapService {
     });
   }
 
-  // Marcador para el usuario (azul)
   createUserIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -162,7 +151,6 @@ export class MapService {
     });
   }
 
-  // Marcador para selección (verde)
   createSelectionIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -174,20 +162,38 @@ export class MapService {
     });
   }
 
-  // Popup
   private createEventPopupContent(event: any): string {
     const hobbyText = Array.isArray(event.hobby)
       ? event.hobby.join(', ')
       : event.hobby;
 
     return `
-      <div style="min-width: 200px;">
-        <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${event.title}</h4>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Hobby:</strong> ${hobbyText}</p>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Fecha:</strong> ${event.date}</p>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Creador:</strong> ${event.creatorUser}</p>
-        <p style="margin: 4px 0; font-size: 13px;"><strong>Participantes:</strong> ${event.participants?.length || 0}</p>
-        <p style="margin: 8px 0 0 0; font-size: 12px; color: #666; font-style: italic;">${event.description}</p>
+      <div style="min-width: 250px; font-family: system-ui;">
+        <h4 style="margin: 0 0 8px 0; font-size: 16px; color: #333; font-weight: 600;">
+          ${event.title}
+        </h4>
+        <p style="margin: 8px 0; font-size: 13px; color: #666; line-height: 1.4;">
+          ${event.description}
+        </p>
+        <button
+          onclick="window.navigateToEvent('${event._id}')"
+          style="
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+          "
+          onmouseover="this.style.transform='scale(1.05)'"
+          onmouseout="this.style.transform='scale(1)'">
+          👁️ Ver detalles completos
+        </button>
       </div>
     `;
   }
