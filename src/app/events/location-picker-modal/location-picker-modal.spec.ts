@@ -1,8 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-<<<<<<< HEAD
-
-import { LocationPickerModal } from './location-picker-modal';
-=======
 import { LocationPickerModal } from './location-picker-modal';
 import { Component, EventEmitter, NO_ERRORS_SCHEMA, Output } from '@angular/core';
 import { signal } from '@angular/core';
@@ -17,27 +13,10 @@ import { MapService } from '../../core/services/map.service';
 class MockMapComponent {
   @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
 }
->>>>>>> refactor/styles
 
 describe('LocationPickerModal', () => {
   let component: LocationPickerModal;
   let fixture: ComponentFixture<LocationPickerModal>;
-<<<<<<< HEAD
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [LocationPickerModal]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(LocationPickerModal);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-=======
   const mockMapService = {
     initMap: vi.fn(),
     destroyMap: vi.fn(),
@@ -102,6 +81,5 @@ describe('LocationPickerModal', () => {
     expect(component.selectedLocation()).toBeNull();
     expect(component.isOpen()).toBe(false);
     expect(closeEmitSpy).toHaveBeenCalled();
->>>>>>> refactor/styles
   });
 });

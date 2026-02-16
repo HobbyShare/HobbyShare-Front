@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Map } from './map';
-
-describe('Map', () => {
-  let component: Map;
-  let fixture: ComponentFixture<Map>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [Map]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(Map);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-=======
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { MapComponent } from './map';
 import { EventsService } from '../../core/services/events.service';
@@ -38,7 +15,7 @@ describe('MapComponent', () => {
 
   beforeEach(async () => {
     mockMapService = {
-      initMap: vi.fn().mockReturnValue({}), 
+      initMap: vi.fn().mockReturnValue({}),
       destroyMap: vi.fn(),
       onMapClick: vi.fn(),
       createMarker: vi.fn().mockReturnValue({ openPopup: vi.fn(), setLatLng: vi.fn() }),
@@ -140,6 +117,5 @@ describe('MapComponent', () => {
     (window as any).navigateToEvent('123');
 
     expect(router.navigate).toHaveBeenCalledWith(['/events', '123']);
->>>>>>> refactor/styles
   });
 });

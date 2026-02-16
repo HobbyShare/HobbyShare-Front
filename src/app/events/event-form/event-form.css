@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-/* Estilos existentes de tu proyecto (mantén los que ya tengas) */
-
-/* ============================================
-   SECCIÓN DE UBICACIÓN - NUEVOS ESTILOS
-   ============================================ */
-=======
-
->>>>>>> refactor/styles
 
 .location-section {
   margin: 1rem 0;
@@ -24,11 +15,6 @@
   font-size: 0.95rem;
 }
 
-<<<<<<< HEAD
-/* Placeholder cuando no hay ubicación */
-=======
-
->>>>>>> refactor/styles
 .location-placeholder {
   text-align: center;
   padding: 2rem 1rem;
@@ -66,11 +52,6 @@
   font-style: italic;
 }
 
-<<<<<<< HEAD
-/* Preview de ubicación seleccionada */
-=======
-
->>>>>>> refactor/styles
 .location-preview {
   background-color: white;
   border-radius: 8px;
@@ -109,11 +90,6 @@
   font-weight: 500;
 }
 
-<<<<<<< HEAD
-/* Mini mapa */
-=======
-
->>>>>>> refactor/styles
 .mini-map {
   margin: 1rem 0;
   border-radius: 6px;
@@ -121,11 +97,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-<<<<<<< HEAD
-/* Botones de acción de ubicación */
-=======
-
->>>>>>> refactor/styles
 .location-actions {
   display: flex;
   gap: 0.75rem;
@@ -170,11 +141,6 @@
   transform: scale(0.98);
 }
 
-<<<<<<< HEAD
-/* Error de ubicación */
-=======
-
->>>>>>> refactor/styles
 .location-error {
   margin-top: 0.5rem;
   padding: 0.5rem;
@@ -188,13 +154,6 @@
   font-size: 0.875rem;
 }
 
-<<<<<<< HEAD
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-=======
-
->>>>>>> refactor/styles
 
 @media (max-width: 768px) {
   .location-section {
