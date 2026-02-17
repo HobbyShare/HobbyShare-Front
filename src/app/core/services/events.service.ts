@@ -5,12 +5,13 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { Hobby } from '../enums/hobby.enum';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
-  private apiUrl = 'http://localhost:3000/events';
+  private apiUrl = environment.apiUrl;
   private authService = inject(AuthService);
   private router = inject(Router);
 
