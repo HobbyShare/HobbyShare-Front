@@ -1,0 +1,213 @@
+
+.location-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.location-section > label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.location-placeholder {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.btn-select-location {
+  padding: 1rem 2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-select-location:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.btn-select-location:active {
+  transform: translateY(0);
+}
+
+.helper-text {
+  margin-top: 0.75rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.location-preview {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.25rem;
+  border: 1px solid #dee2e6;
+}
+
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.location-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.location-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.location-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.location-coords {
+  font-family: 'Courier New', monospace;
+  color: #007bff;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.mini-map {
+  margin: 1rem 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.location-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-change-location,
+.btn-remove-location {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-change-location {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-change-location:hover {
+  background-color: #5a6268;
+}
+
+.btn-remove-location {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-remove-location:hover {
+  background-color: #c82333;
+}
+
+.btn-change-location:active,
+.btn-remove-location:active {
+  transform: scale(0.98);
+}
+
+.location-error {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+}
+
+.location-error small {
+  font-size: 0.875rem;
+}
+
+
+@media (max-width: 768px) {
+  .location-section {
+    padding: 0.75rem;
+  }
+
+  .location-placeholder {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .btn-select-location {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    justify-content: center;
+  }
+
+  .location-actions {
+    flex-direction: column;
+  }
+
+  .btn-change-location,
+  .btn-remove-location {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mini-map iframe {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .location-icon {
+    font-size: 1.5rem;
+  }
+
+  .mini-map iframe {
+    height: 150px;
+  }
+}
+
+.coords-display {
+  padding: 2rem;
+  background-color: #e7f5ff;
+  border-radius: 6px;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: #0056b3;
+  font-weight: 600;
+}
