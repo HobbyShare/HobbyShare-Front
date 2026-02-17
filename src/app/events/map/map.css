@@ -1,0 +1,14 @@
+#map {
+  height: 100vh;
+}
+
+
+.cursor-crosshair .leaflet-container {
+  cursor: crosshair !important;
+}
+
+
+.modal-map .leaflet-map {
+  height: 500px;
+  min-height: 350px;
+}
