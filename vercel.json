@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/hobbyShare/browser",
+  "outputDirectory": "dist/sprint8-hobbyShare/browser",
   "framework": "angular",
   "installCommand": "npm install"
 }
