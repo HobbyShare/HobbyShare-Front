@@ -1,5 +1,5 @@
 
 export const environment = {
   production: true,
-  apiUrl: 'https://hobbyshare-back.onrender.com/'
+  apiUrl: 'https://hobbyshare-back.onrender.com'
 }
