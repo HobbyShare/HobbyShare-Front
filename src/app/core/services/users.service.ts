@@ -9,7 +9,7 @@ import { environment } from '../../../environments/environment.prod';
 })
 export class UsersService {
 
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/users';
   private http = inject(HttpClient)
   private authService = inject(AuthService)
   private _users = signal<User[]>([])
