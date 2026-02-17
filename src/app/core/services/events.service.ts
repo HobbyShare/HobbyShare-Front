@@ -4,24 +4,44 @@ import { EventModel, CreateEventDto } from '../modals/event-model';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
+import { Hobby } from '../enums/hobby.enum';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
-  private apiUrl = 'http://localhost:3000/events';
+  private apiUrl = environment.apiUrl;
   private authService = inject(AuthService);
   private router = inject(Router);
 
   private _events = signal<EventModel[]>([]);
   private _loading = signal<boolean>(false);
   private _error = signal<string | null>(null);
+  private _selectedHobby = signal<string>('');
 
+  selectedHobby = this._selectedHobby.asReadonly();
   events = this._events.asReadonly();
   loading = this._loading.asReadonly();
   error = this._error.asReadonly();
 
+  mapFilteredEvents = computed(() => {
+    const allEvents = this._events();
+    const filterValue = this._selectedHobby();
+
+    if (!filterValue || filterValue === '') {
+      return allEvents;
+    }
+
+    return allEvents.filter(e => {
+      if (!e.hobby) return false;
+
+      return String(e.hobby).trim() === String(filterValue).trim();
+    });
+  });
+
   eventsCount = computed(() => this._events().length);
+  hobbyList = Object.values(Hobby);
 
   constructor(private http: HttpClient) {}
 
@@ -240,6 +260,14 @@ export class EventsService {
     this._error.set(null);
   }
 
+  updateMapFilter(hobby: string): void {
+  this._selectedHobby.set(hobby);
+}
+
+  updateHobbyFilter(hobby: string): void {
+    this._selectedHobby.set(hobby);
+  }
+
   getEventsByHobby()  {
     const events = this._events()
     const counts: any = {}
@@ -270,18 +298,5 @@ export class EventsService {
 
     return counts
 
-  }
-
-  refreshEvent(eventId: string): void {
-    this.getEventById(eventId).subscribe({
-      next: (updatedEvent) => {
-        this._events.update(events =>
-          events.map(e => e._id === eventId ? updatedEvent : e)
-        );
-      },
-      error: (err) => {
-        console.error('Error refreshing event:', err);
-      }
-    });
   }
 }

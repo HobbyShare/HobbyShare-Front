@@ -9,7 +9,6 @@ export class MapService {
   private maps: Map<string, L.Map> = new Map();
 
   initMap(config: MapConfig): L.Map {
-
     this.destroyMap(config.containerId);
 
     const map = L.map(config.containerId).setView(config.center, config.zoom);
@@ -82,7 +81,6 @@ export class MapService {
     markers.forEach((marker) => marker.remove());
   }
 
-
   setView(map: L.Map, coords: [number, number], zoom?: number): void {
     map.setView(coords, zoom || map.getZoom());
   }
@@ -108,13 +106,11 @@ export class MapService {
     });
   }
 
-
   onMapClick(map: L.Map, callback: (lat: number, lng: number) => void): void {
     map.on('click', (e: L.LeafletMouseEvent) => {
       callback(e.latlng.lat, e.latlng.lng);
     });
   }
-
 
   onMarkerDragEnd(marker: L.Marker, callback: (lat: number, lng: number) => void): void {
     marker.on('dragend', (event) => {
@@ -122,7 +118,6 @@ export class MapService {
       callback(position.lat, position.lng);
     });
   }
-
   private createDefaultIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -133,7 +128,6 @@ export class MapService {
       shadowSize: [41, 41],
     });
   }
-
 
   createEventIcon(): L.Icon {
     return L.icon({
@@ -146,7 +140,6 @@ export class MapService {
     });
   }
 
-
   createUserIcon(): L.Icon {
     return L.icon({
       iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -157,7 +150,6 @@ export class MapService {
       shadowSize: [41, 41],
     });
   }
-
 
   createSelectionIcon(): L.Icon {
     return L.icon({

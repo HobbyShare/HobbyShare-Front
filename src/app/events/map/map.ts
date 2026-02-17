@@ -22,7 +22,7 @@ import { NavigationService } from '../../core/services/navigation.service';
   styleUrl: './map.css',
 })
 export class MapComponent implements OnInit, OnDestroy {
-  private eventsService = inject(EventsService);
+  public eventsService = inject(EventsService);
   private mapService = inject(MapService);
   private router = inject(Router);
   private navigationService = inject(NavigationService);
@@ -30,7 +30,7 @@ export class MapComponent implements OnInit, OnDestroy {
   @Input() initialCoords?: { lat: number; lng: number };
   @Input() showEventMarkers: boolean = true;
   @Input() containerId: string = 'map';
-  @Input() centerCoords: [number, number] = [41.40237282641176, 2.194541858893481]; 
+  @Input() centerCoords: [number, number] = [41.40237282641176, 2.194541858893481];
   @Input() zoom: number = 13;
 
   @Output() locationSelected = new EventEmitter<{ lat: number; lng: number }>();
@@ -45,12 +45,13 @@ export class MapComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      const currentEvents = this.events();
+      const currentEvents = this.eventsService.mapFilteredEvents();
 
-      if (this.map && this.showEventMarkers && currentEvents.length > 0 && this.mode === 'view') {
+      if (this.map && this.showEventMarkers && this.mode === 'view') {
         this.paintEventMarkers(currentEvents);
       }
     });
+
     effect(() => {
       const coords = this.initialCoords;
       if (this.map && coords && this.mode === 'view') {
@@ -70,6 +71,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     setTimeout(() => {
+      this.eventsService.updateMapFilter('');
       this.initMap();
 
       if (this.mode === 'view' && this.showEventMarkers) {
@@ -90,7 +92,7 @@ export class MapComponent implements OnInit, OnDestroy {
     if (this.map) {
       this.mapService.destroyMap(this.containerId);
     }
-    delete (window as any).navigateToEvent;
+
   }
 
   private initMap(): void {
@@ -208,5 +210,10 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     this.mapService.setView(this.map, coordsArray, 15);
+  }
+
+  onHobbyChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
+    this.eventsService.updateMapFilter(value);
   }
 }

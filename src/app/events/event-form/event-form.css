@@ -1,5 +1,4 @@
 
-
 .location-section {
   margin: 1rem 0;
   padding: 1rem;
@@ -15,7 +14,6 @@
   color: #495057;
   font-size: 0.95rem;
 }
-
 
 .location-placeholder {
   text-align: center;
@@ -53,7 +51,6 @@
   font-size: 0.875rem;
   font-style: italic;
 }
-
 
 .location-preview {
   background-color: white;
@@ -93,14 +90,12 @@
   font-weight: 500;
 }
 
-
 .mini-map {
   margin: 1rem 0;
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 
 .location-actions {
   display: flex;
@@ -146,7 +141,6 @@
   transform: scale(0.98);
 }
 
-
 .location-error {
   margin-top: 0.5rem;
   padding: 0.5rem;
@@ -159,7 +153,6 @@
 .location-error small {
   font-size: 0.875rem;
 }
-
 
 
 @media (max-width: 768px) {
