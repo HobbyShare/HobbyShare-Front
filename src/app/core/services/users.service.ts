@@ -2,13 +2,14 @@ import { HttpClient, HttpHeaders  } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { User } from "../modals/user-api";
 import { AuthService } from './auth.service';
+import { environment } from '../../../environments/environment.prod';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
 
-  private apiUrl = 'http://localhost:3000/users';
+  private apiUrl = environment.apiUrl;
   private http = inject(HttpClient)
   private authService = inject(AuthService)
   private _users = signal<User[]>([])

@@ -40,7 +40,7 @@ export class LocationPickerModal {
     this.selectedLocation.set(null);
   }
 
-  
+
   onBackdropClick(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
       this.closeModal();

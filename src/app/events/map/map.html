@@ -4,8 +4,19 @@
   <div [class.cursor-crosshair]="mode === 'select'"
        class="relative flex flex-col w-[85%] h-full">
 
-    <div class="flex flex-wrap items-center justify-end gap-4 py-3 bg-transparent border-b-2 border-gray-200 md:flex-row md:items-center">
-
+      <div class="flex flex-wrap items-center justify-end gap-4 py-3 bg-transparent border-b-2 border-gray-200 md:flex-row md:items-center">
+        @if (mode === 'view') {
+          <select (change)="onHobbyChange($event)"
+                  [value]="eventsService.selectedHobby()"
+                  class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none bg-white cursor-pointer shadow-sm">
+            <option value="">Todas las categorías</option>
+            @for (hobby of eventsService.hobbyList; track hobby) {
+              @if (hobby) {
+                <option [value]="hobby">{{ hobby }}</option>
+              }
+            }
+          </select>
+        }
       <button
         type="button"
         (click)="getLocation()"

@@ -80,6 +80,12 @@ export class EventForm implements OnInit {
           lng: event.lng,
         });
 
+        // Actualizar la ubicación seleccionada para el preview
+        this.selectedLocation.set({
+          lat: event.lat,
+          lng: event.lng,
+        });
+
         this.isLoadingEvent.set(false);
       },
       error: (err) => {
@@ -187,3 +193,4 @@ export class EventForm implements OnInit {
     }
   }
 }
+
