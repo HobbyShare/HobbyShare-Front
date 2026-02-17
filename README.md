@@ -253,7 +253,7 @@ Storing participant IDs directly in the event document (denormalized) allows fas
 
 ## 16. Demo
 
-Access the live demo: [HobbyShare Demo](https://your-demo-url-here.com)
+Access the live demo: [HobbyShare Demo](https://hobby-share-front.vercel.app/)
 
 **Test Credentials:**
 - Username: `demo`
