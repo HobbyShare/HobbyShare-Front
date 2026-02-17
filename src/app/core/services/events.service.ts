@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment.prod';
   providedIn: 'root'
 })
 export class EventsService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/events';
   private authService = inject(AuthService);
   private router = inject(Router);
 
