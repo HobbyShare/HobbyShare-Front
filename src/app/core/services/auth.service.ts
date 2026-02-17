@@ -3,6 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../environments/environment.prod';
 
 interface JwtPayload {
   userName: string;
@@ -15,7 +16,7 @@ interface JwtPayload {
   providedIn: 'root',
 })
 export class AuthService {
-  private API_URL = 'http://localhost:3000';
+  private API_URL = environment.apiUrl;
 
   isAuthenticated = signal<boolean>(false)
   currentUser = signal<string | null>(null)
