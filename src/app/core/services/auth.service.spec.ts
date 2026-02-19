@@ -60,5 +60,4 @@ describe('Auth', () => {
     expect(localStorage.getItem('token')).toBeNull();
   });
 
-
 });

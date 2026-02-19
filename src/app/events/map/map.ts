@@ -92,7 +92,6 @@ export class MapComponent implements OnInit, OnDestroy {
     if (this.map) {
       this.mapService.destroyMap(this.containerId);
     }
-
   }
 
   private initMap(): void {
