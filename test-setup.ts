@@ -1,5 +1,22 @@
+import 'zone.js';
+import 'zone.js/testing';
+
 import '@angular/compiler';
+import { getTestBed } from '@angular/core/testing';
+import {
+  BrowserTestingModule,
+  platformBrowserTesting,
+} from '@angular/platform-browser/testing';
 import { afterEach } from 'vitest';
+
+// 2. INICIALIZAR el entorno de pruebas de Angular
+// Esto es lo que permite que TestBed funcione con Vitest
+getTestBed().initTestEnvironment(
+  BrowserTestingModule,
+  platformBrowserTesting()
+);
+
+
 
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
