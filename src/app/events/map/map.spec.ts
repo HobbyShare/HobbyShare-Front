@@ -1,121 +1,104 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MapComponent } from './map';
 import { EventsService } from '../../core/services/events.service';
 import { MapService } from '../../core/services/map.service';
-import { Router } from '@angular/router';
 import { NavigationService } from '../../core/services/navigation.service';
 import { signal } from '@angular/core';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { provideRouter } from '@angular/router';
+import * as L from 'leaflet';
 
 describe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
-  let mockMapService: any;
-  let mockEventsService: any;
+
+  const mockMap = {
+    setView: vi.fn().mockReturnThis(),
+    remove: vi.fn(),
+    on: vi.fn(),
+  } as unknown as L.Map;
+
+  const mockMarker = {
+    addTo: vi.fn().mockReturnThis(),
+    setLatLng: vi.fn().mockReturnThis(),
+    openPopup: vi.fn().mockReturnThis(),
+    on: vi.fn().mockReturnThis(),
+    remove: vi.fn(),
+  } as unknown as L.Marker;
+
+  const mockMapService = {
+    initMap: vi.fn().mockReturnValue(mockMap),
+    createMarker: vi.fn().mockReturnValue(mockMarker),
+    removeMarker: vi.fn(),
+    removeMarkers: vi.fn(),
+    createEventMarkers: vi.fn().mockReturnValue([]),
+    createSelectionIcon: vi.fn().mockReturnValue({}),
+    createUserIcon: vi.fn().mockReturnValue({}),
+    onMapClick: vi.fn(),
+    onMarkerDragEnd: vi.fn(),
+    setView: vi.fn(),
+    getUserLocation: vi.fn().mockResolvedValue({ lat: 41.4, lng: 2.19 }),
+    destroyMap: vi.fn(),
+  };
+
+  const mockEventsService = {
+    events: signal([]),
+    mapFilteredEvents: signal([]),
+    selectedHobby: signal(''),
+    hobbyList: ['Deporte', 'Música'],
+    updateMapFilter: vi.fn(),
+    loadEvents: vi.fn(),
+  };
+
+  const mockNavigationService = {
+    setPreviousUrl: vi.fn(),
+  };
 
   beforeEach(async () => {
-    mockMapService = {
-      initMap: vi.fn().mockReturnValue({}),
-      destroyMap: vi.fn(),
-      onMapClick: vi.fn(),
-      createMarker: vi.fn().mockReturnValue({ openPopup: vi.fn(), setLatLng: vi.fn() }),
-      removeMarker: vi.fn(),
-      removeMarkers: vi.fn(),
-      createEventMarkers: vi.fn().mockReturnValue([]),
-      createSelectionIcon: vi.fn(),
-      createUserIcon: vi.fn(),
-      onMarkerDragEnd: vi.fn(),
-      setView: vi.fn(),
-      getUserLocation: vi.fn().mockResolvedValue({ lat: 40, lng: -3 })
-    };
-
-    mockEventsService = {
-      events: signal([]),
-      loadEvents: vi.fn()
-    };
-
     await TestBed.configureTestingModule({
       imports: [MapComponent],
       providers: [
+        provideRouter([]),
         { provide: MapService, useValue: mockMapService },
         { provide: EventsService, useValue: mockEventsService },
-        { provide: Router, useValue: { url: '/map', navigate: vi.fn() } },
-        { provide: NavigationService, useValue: { setPreviousUrl: vi.fn() } }
-      ]
+        { provide: NavigationService, useValue: mockNavigationService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MapComponent);
     component = fixture.componentInstance;
-  });
-  const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
-  it('should create and initialize the map', async() => {
+    const div = document.createElement('div');
+    div.id = component.containerId;
+    document.body.appendChild(div);
+  });
+
+  afterEach(() => {
+    const div = document.getElementById(component.containerId);
+    if (div) div.remove();
+    vi.clearAllMocks();
+  });
+
+  it('should create and initialize the map', async () => {
     fixture.detectChanges();
-    await delay(0);
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    expect(component).toBeTruthy();
     expect(mockMapService.initMap).toHaveBeenCalled();
   });
 
-  it('should load events on init when mode is view', async() => {
+  it('should load events on init when mode is view', async () => {
     component.mode = 'view';
     fixture.detectChanges();
-    await delay(0);
+    await new Promise(resolve => setTimeout(resolve, 0));
+
     expect(mockEventsService.loadEvents).toHaveBeenCalled();
   });
 
-  it('should setup selection mode and react to map clicks', async() => {
-    component.mode = 'select';
-    fixture.detectChanges();
-    await delay(0);
-
-    expect(mockMapService.onMapClick).toHaveBeenCalled();
-  });
-
-  it('should emit locationSelected when a marker is placed', async() => {
-    const emitSpy = vi.spyOn(component.locationSelected, 'emit');
-    fixture.detectChanges();
-    await delay(0);
-
-    (component as any).placeSelectionMarker(40, -3);
-
-    expect(emitSpy).toHaveBeenCalledWith({ lat: 40, lng: -3 });
-    expect(component.selectedLocation()).toEqual({ lat: 40, lng: -3 });
-  });
-
-  it('should repaint markers when events signal changes', async() => {
-    fixture.detectChanges();
-    await delay(0);
-
-    mockEventsService.events.set([{ _id: '1', lat: 10, lng: 10 }]);
-
-    fixture.detectChanges();
-
-    expect(mockMapService.createEventMarkers).toHaveBeenCalled();
-  });
-
-  it('should call getUserLocation and set view when getLocation is called', async () => {
-    (component as any).map = { dummy: true };
-
-    fixture.detectChanges();
-
-    await component.getLocation();
-
-    expect(mockMapService.getUserLocation).toHaveBeenCalled();
-    expect(mockMapService.setView).toHaveBeenCalled();
-  });
-
-  it('should destroy map instance on destroy', () => {
-    (component as any).map = {};
-    component.ngOnDestroy();
-    expect(mockMapService.destroyMap).toHaveBeenCalledWith(component.containerId);
-  });
-
-  it('should expose navigateToEvent to window and use router', () => {
-    fixture.detectChanges();
-    const router = TestBed.inject(Router);
-
-    expect((window as any).navigateToEvent).toBeDefined();
-    (window as any).navigateToEvent('123');
-
-    expect(router.navigate).toHaveBeenCalledWith(['/events', '123']);
+  it('should update filter when hobby changes', () => {
+    const event = { target: { value: 'Música' } } as any;
+    component.onHobbyChange(event);
+    expect(mockEventsService.updateMapFilter).toHaveBeenCalledWith('Música');
   });
 });

@@ -44,7 +44,7 @@ describe('Auth', () => {
     const credentials = { userName: 'test', password: 'test123'}
 
     service.login(credentials).subscribe(response => {
-      expect(response.acces_token).toBe('test-token')
+      expect(response.access_token).toBe('test-token')
     })
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`)
@@ -59,6 +59,5 @@ describe('Auth', () => {
 
     expect(localStorage.getItem('token')).toBeNull();
   });
-
 
 });
