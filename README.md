@@ -242,8 +242,6 @@ Storing participant IDs directly in the event document (denormalized) allows fas
 ### Login & Registration
 ![Login Screen](/public/login-register.gif)
 
-\*\*Testing: ir haciendo al acabar cada componente/tarea, testing mas importante:
-servicios, crud, auth, llamadas api, y presentacion de graficos, mapa i calendar
 
 ### Events Management & Map
 ![Events List and Detail](/public/events-list-detail.gif)
